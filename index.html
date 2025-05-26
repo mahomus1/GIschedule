@@ -194,12 +194,10 @@
 
         .call-icon-inline { margin-left: 0.25rem; font-size: 0.75em; }
         .asterisk-note {
-            color: #000000; /* Changed to black */
-            font-size: 0.8em; 
-            font-style: italic;
-            white-space: normal; 
-            margin-left: 2px; /* Keep a small space from the initials */
-            display: inline; /* Allow it to be on the same line if space permits, but wrap if needed */
+            color: #000000; 
+            font-weight: bold; /* Keep bold for emphasis */
+            margin-left: 1px; /* Small space */
+            font-size: 0.9em; /* Slightly smaller than main text */
         }
         
         .holiday-indicator {
@@ -216,8 +214,8 @@
             flex-shrink: 0; 
         }
         .holiday-indicator .date-text { 
-            font-size: 0.85em; /* Adjusted for black text */
-            color: #000000; /* Black text */
+            font-size: 0.9em; 
+            color: #000000; 
             white-space: normal; 
             word-break: break-word; 
         }
@@ -244,17 +242,17 @@
             width: 120px; 
             cursor: pointer;
         }
-        #call-legend-content {
+        #custom-notes-legend-content { 
             font-size: 0.8rem;
             color: #4b5563; 
         }
-        #call-legend-content p {
+        #custom-notes-legend-content p {
             margin-bottom: 0.25rem;
         }
-         #call-legend-content .legend-item {
+         #custom-notes-legend-content .legend-item {
             margin-bottom: 0.3rem;
         }
-        #call-legend-content .legend-symbol {
+        #custom-notes-legend-content .legend-symbol { 
             display: inline-block;
             width: 20px; 
             text-align: center;
@@ -296,7 +294,7 @@
                     <div id="fellow-buttons-container" class="fellow-buttons-container">
                         </div>
                 </details>
-                </div>
+            </div>
         </div>
 
 
@@ -308,13 +306,21 @@
             No schedule data found for the selected fellow.
         </div>
         
-        <details class="legend-details" id="call-legend-details">
+        <details class="legend-details" id="custom-notes-legend"> 
             <summary>Legend</summary>
-            <div id="call-legend-content">
+            <div id="custom-notes-legend-content">
                 <p><span class="legend-symbol">📞</span> = On Call</p>
                 <p class="mt-1"><em>Note: Call starts Friday 4:30 PM of the preceding week and ends Friday morning of the listed week.</em></p>
-                <p><span class="legend-symbol">*</span>&nbsp;&nbsp;&nbsp;= Thanksgiving call (AA)</p>
-                <p><span class="legend-symbol">**</span> = Last weekend call (MD)</p>
+                <hr class="my-2">
+                <p><strong>Specific Holiday Coverage:</strong></p>
+                <p><span class="legend-symbol">*</span> DF: Labor Day (Sep 1, 2025)</p>
+                <p><span class="legend-symbol">*</span> MG: 4th of July (Jul 4, 2025)</p>
+                <p><span class="legend-symbol">*</span> IM: Thanksgiving (Nov 27, 2025)</p>
+                <p><span class="legend-symbol">*</span> AA: Christmas (Dec 25, 2025), Memorial Day (May 26, 2025)</p>
+                <p><span class="legend-symbol">*</span> EZ: Black Friday (Nov 28, 2025), MLK Day (Jan 19, 2026)</p>
+                <p><span class="legend-symbol">*</span> AM: Juneteenth (Jun 19, 2025)</p>
+                <p><span class="legend-symbol">*</span> MD: New Year's Day (Jan 1, 2026)</p>
+                <p><span class="legend-symbol">**</span> MD: Last Weekend Call</p>
             </div>
         </details>
     </div>
@@ -469,9 +475,10 @@
             { name: "Christmas", date: new Date(2025, 11, 25), indicator: "🎄🎅" }, 
             // 2026
             { name: "New Year's Day", date: new Date(2026, 0, 1), indicator: "🎉" },
+            { name: "MLK Day", date: new Date(2026, 0, 19), indicator: "🧑🏾‍⚖️" }, 
             { name: "Ramadan", startDate: new Date(2026, 1, 18), endDate: new Date(2026, 2, 19), indicator: "🌙🕌" },
             { name: "Eid al-Fitr", date: new Date(2026, 2, 20), indicator: "🥙🎉" },
-            { name: "Easter", date: new Date(2026, 3, 5), indicator: "🥚🐰" }, 
+            { name: "Easter", date: new Date(2026, 3, 3), indicator: "🥚🐰", displayText: "4/5" }, 
             { name: "DDW Conference", startDate: new Date(2026, 4, 2), endDate: new Date(2026, 4, 5), indicator: "👩‍💼", conferenceName: "DDW" }, 
             { name: "Memorial Day", date: new Date(2026, 4, 25), indicator: "⚰️🕯" },
             { name: "Eid al-Adha", date: new Date(2026, 4, 27), indicator: "🐑" },
@@ -487,6 +494,19 @@
             if (h.startDate) h.startDate.setHours(0,0,0,0);
             if (h.endDate) h.endDate.setHours(23,59,59,999);
         });
+
+        const specificHolidayCoverage = [
+            { fellow: 'DF', holidayName: "Labor Day", date: new Date(2025, 8, 1) }, 
+            { fellow: 'MG', holidayName: "4th of July", date: new Date(2025, 6, 4) },
+            { fellow: 'IM', holidayName: "Thanksgiving", date: new Date(2025, 10, 27) },
+            { fellow: 'AA', holidayName: "Christmas", date: new Date(2025, 11, 25) },
+            { fellow: 'AA', holidayName: "Memorial Day", date: new Date(2025, 4, 26) },
+            { fellow: 'EZ', holidayName: "Black Friday", date: new Date(2025, 10, 28) },
+            { fellow: 'EZ', holidayName: "MLK Day", date: new Date(2026, 0, 19) },
+            { fellow: 'AM', holidayName: "Juneteenth", date: new Date(2025, 5, 19) },
+            { fellow: 'MD', holidayName: "New Year's Day", date: new Date(2026, 0, 1) }
+        ];
+        specificHolidayCoverage.forEach(h => h.date.setHours(0,0,0,0));
 
 
         let parsedMainSchedule = []; 
@@ -773,6 +793,9 @@
                             holidayDateText = `${holiday.conferenceName} ${monthNames[holiday.startDate.getMonth()]} ${holiday.startDate.getDate()} - ${monthNames[holiday.endDate.getMonth()]} ${holiday.endDate.getDate()}`;
                         }
                     }
+                } else if (holiday.name === "Easter" && holidayYear === 2026 && weekString === "03/30-04/03") { 
+                     displayHoliday = true;
+                     holidayDateText = holiday.displayText || `${monthNames[holiday.date.getMonth()]} ${holiday.date.getDate()}`; 
                 } else if (holiday.startDate && holiday.endDate) { 
                     if (holiday.startDate <= weekFullEndDate && holiday.endDate >= weekFullStartDate) {
                         displayHoliday = true;
@@ -870,10 +893,21 @@
                     if (ALL_FELLOWS.includes(cellContent) && cellContent === fellowOnCallThisWeek) {
                         cellHtml += ` <span class="call-icon-inline">📞</span>`;
                     }
+                    
+                    // Check for specific holiday coverage for asterisks
+                    let hasSpecificHolidayCoverage = false;
+                    specificHolidayCoverage.forEach(coverage => {
+                        if (coverage.fellow === cellContent && 
+                            coverage.date >= weekData.fullStartDate && 
+                            coverage.date <= weekData.fullEndDate) {
+                            hasSpecificHolidayCoverage = true;
+                        }
+                    });
 
-                    if (cellContent === 'AA' && weekString === '11/24-11/28') {
+                    if (hasSpecificHolidayCoverage) {
                         cellHtml += ` <span class="asterisk-note">*</span>`;
                     }
+                     // Special handling for MD's last weekend call
                     if (cellContent === 'MD' && weekString === mdLastAssignmentWeekString) {
                          cellHtml += ` <span class="asterisk-note">**</span>`;
                     }
@@ -1002,12 +1036,22 @@
                 if (fellowInitial === fellowOnCallThisWeek) {
                     rotationCellContent += ` <span class="call-icon-inline">📞</span>`;
                 }
-                if (fellowInitial === 'AA' && weekString === '11/24-11/28') {
+                
+                let hasSpecificHolidayCoverage = false;
+                specificHolidayCoverage.forEach(coverage => {
+                    if (coverage.fellow === fellowInitial && 
+                        coverage.date >= assignment.fullStartDate && 
+                        coverage.date <= assignment.fullEndDate) {
+                        hasSpecificHolidayCoverage = true;
+                    }
+                });
+                if (hasSpecificHolidayCoverage) {
                     rotationCellContent += ` <span class="asterisk-note">*</span>`;
                 }
                 if (fellowInitial === 'MD' && weekString === mdLastAssignmentWeekString) {
                      rotationCellContent += ` <span class="asterisk-note">**</span>`;
                 }
+
 
                 const rotationCell = document.createElement('td');
                 rotationCell.innerHTML = rotationCellContent;
