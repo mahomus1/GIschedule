@@ -101,10 +101,10 @@
         }
         .no-assignment { color: #9ca3af; font-style: italic; }
 
-        .fellow-buttons-details, .legend-details { 
+        .fellow-buttons-details, .legend-details-wrapper { /* Shared style for <details> wrappers */
             margin-top: 1rem;
         }
-        .fellow-buttons-details summary, .legend-details summary {
+        .fellow-buttons-details summary { /* Specific for fellow buttons */
             padding: 0.5rem 1rem;
             font-weight: 500;
             cursor: pointer;
@@ -114,21 +114,19 @@
             list-style-position: inside; 
             outline: none; 
         }
-        .fellow-buttons-details[open] summary, .legend-details[open] summary {
+        .fellow-buttons-details[open] summary {
             border-bottom-left-radius: 0;
             border-bottom-right-radius: 0;
             border-bottom: none; 
         }
-        .fellow-buttons-container, .legend-details div { 
+        .fellow-buttons-container {
+            display: flex; flex-wrap: wrap;
+            gap: 0.5rem; align-items: center;
             padding: 0.75rem; 
             border: 1px solid #e5e7eb; 
             border-top: none;
             border-bottom-left-radius: 0.375rem;
             border-bottom-right-radius: 0.375rem;
-        }
-        .fellow-buttons-container {
-            display: flex; flex-wrap: wrap;
-            gap: 0.5rem; align-items: center;
         }
 
 
@@ -195,9 +193,9 @@
         .call-icon-inline { margin-left: 0.25rem; font-size: 0.75em; }
         .asterisk-note {
             color: #000000; 
-            font-weight: bold; /* Keep bold for emphasis */
-            margin-left: 1px; /* Small space */
-            font-size: 0.9em; /* Slightly smaller than main text */
+            font-weight: bold; 
+            margin-left: 1px; 
+            font-size: 0.9em; 
         }
         
         .holiday-indicator {
@@ -242,21 +240,42 @@
             width: 120px; 
             cursor: pointer;
         }
-        #custom-notes-legend-content { 
+        .legend-button-wrapper {
+            position: relative; /* For positioning the popover */
+            margin-top: 1rem;
+            margin-left: 0.5rem; /* Space from other controls */
+        }
+        #legend-toggle-btn {
+            padding: 0.3rem 0.6rem;
+            font-size: 0.8rem;
+            background-color: #e5e7eb; /* gray-200 */
+            border: 1px solid #d1d5db; /* gray-300 */
+            border-radius: 0.375rem;
+            color: #374151; /* gray-700 */
+        }
+        #legend-toggle-btn:hover {
+            background-color: #d1d5db; /* gray-300 */
+        }
+        #legend-popover {
             font-size: 0.8rem;
             color: #4b5563; 
+            min-width: 250px; /* Ensure enough width for content */
+            right: 0; /* Align to the right of the button wrapper */
         }
-        #custom-notes-legend-content p {
+        #legend-popover p {
             margin-bottom: 0.25rem;
         }
-         #custom-notes-legend-content .legend-item {
+         #legend-popover .legend-item {
             margin-bottom: 0.3rem;
         }
-        #custom-notes-legend-content .legend-symbol { 
+        #legend-popover .legend-symbol { 
             display: inline-block;
             width: 20px; 
             text-align: center;
             font-weight: bold;
+        }
+        .hidden {
+            display: none !important;
         }
     </style>
 </head>
@@ -287,6 +306,23 @@
                             <input type="range" id="zoom-slider" min="0.3" max="1.0" value="1" step="0.05"> 
                             <span id="zoom-value">100%</span> 
                         </div>
+                         <div class="legend-button-wrapper">
+                            <button id="legend-toggle-btn">Legend ℹ️</button>
+                            <div id="legend-popover" class="hidden absolute mt-1 w-auto bg-white border border-gray-300 rounded-md shadow-lg p-3 z-20 right-0">
+                                <p><span class="legend-symbol">📞</span> = On Call</p>
+                                <p class="mt-1"><em>Note: Call starts Friday 4:30 PM of the preceding week and ends Friday morning of the listed week.</em></p>
+                                <hr class="my-2">
+                                <p><strong>Specific Holiday Coverage:</strong></p>
+                                <p><span class="legend-symbol">*</span> DF: Labor Day (Sep 1, 2025)</p>
+                                <p><span class="legend-symbol">*</span> MG: 4th of July (Jul 4, 2025)</p>
+                                <p><span class="legend-symbol">*</span> IM: Thanksgiving (Nov 27, 2025)</p>
+                                <p><span class="legend-symbol">*</span> AA: Christmas (Dec 25, 2025), Memorial Day (May 26, 2025)</p>
+                                <p><span class="legend-symbol">*</span> EZ: Black Friday (Nov 28, 2025), MLK Day (Jan 19, 2026)</p>
+                                <p><span class="legend-symbol">*</span> AM: Juneteenth (Jun 19, 2025)</p>
+                                <p><span class="legend-symbol">*</span> MD: New Year's Day (Jan 1, 2026)</p>
+                                <p><span class="legend-symbol">**</span> MD: Last Weekend Call</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <details class="fellow-buttons-details" id="fellow-buttons-details">
@@ -294,7 +330,7 @@
                     <div id="fellow-buttons-container" class="fellow-buttons-container">
                         </div>
                 </details>
-            </div>
+                </div>
         </div>
 
 
@@ -305,25 +341,7 @@
         <div id="no-data-message" class="hidden text-center text-gray-500 mt-6 sm:mt-8 text-lg sm:text-xl">
             No schedule data found for the selected fellow.
         </div>
-        
-        <details class="legend-details" id="custom-notes-legend"> 
-            <summary>Legend</summary>
-            <div id="custom-notes-legend-content">
-                <p><span class="legend-symbol">📞</span> = On Call</p>
-                <p class="mt-1"><em>Note: Call starts Friday 4:30 PM of the preceding week and ends Friday morning of the listed week.</em></p>
-                <hr class="my-2">
-                <p><strong>Specific Holiday Coverage:</strong></p>
-                <p><span class="legend-symbol">*</span> DF: Labor Day (Sep 1, 2025)</p>
-                <p><span class="legend-symbol">*</span> MG: 4th of July (Jul 4, 2025)</p>
-                <p><span class="legend-symbol">*</span> IM: Thanksgiving (Nov 27, 2025)</p>
-                <p><span class="legend-symbol">*</span> AA: Christmas (Dec 25, 2025), Memorial Day (May 26, 2025)</p>
-                <p><span class="legend-symbol">*</span> EZ: Black Friday (Nov 28, 2025), MLK Day (Jan 19, 2026)</p>
-                <p><span class="legend-symbol">*</span> AM: Juneteenth (Jun 19, 2025)</p>
-                <p><span class="legend-symbol">*</span> MD: New Year's Day (Jan 1, 2026)</p>
-                <p><span class="legend-symbol">**</span> MD: Last Weekend Call</p>
-            </div>
-        </details>
-    </div>
+        </div>
 
     <script>
         const mainScheduleCsvData = `Week,UMH 1,UMH2,VA1,VA 2,VA 3,VA 4,Amb1,EOD1,EOD2,Research,Elective,Vacations
@@ -526,6 +544,8 @@
         const zoomValueDisplay = document.getElementById('zoom-value');
         const exportIcsBtn = document.getElementById('export-ics-btn');
         const fellowButtonsDetails = document.getElementById('fellow-buttons-details');
+        const legendToggleBtn = document.getElementById('legend-toggle-btn');
+        const legendPopover = document.getElementById('legend-popover');
 
         let BASE_FONT_SIZE_TD_REM;
         let BASE_PADDING_TD_Y_REM;
@@ -895,18 +915,13 @@
                     }
                     
                     // Check for specific holiday coverage for asterisks
-                    let hasSpecificHolidayCoverage = false;
                     specificHolidayCoverage.forEach(coverage => {
                         if (coverage.fellow === cellContent && 
                             coverage.date >= weekData.fullStartDate && 
                             coverage.date <= weekData.fullEndDate) {
-                            hasSpecificHolidayCoverage = true;
+                            cellHtml += ` <span class="asterisk-note">*</span>`;
                         }
                     });
-
-                    if (hasSpecificHolidayCoverage) {
-                        cellHtml += ` <span class="asterisk-note">*</span>`;
-                    }
                      // Special handling for MD's last weekend call
                     if (cellContent === 'MD' && weekString === mdLastAssignmentWeekString) {
                          cellHtml += ` <span class="asterisk-note">**</span>`;
@@ -1257,6 +1272,17 @@
                  fellowButtonsDetails.open = !(window.innerWidth < 768 && fellowSelect.value === 'all');
                  if(fellowSelect.value !== 'all') fellowButtonsDetails.classList.add('hidden');
             }
+
+            legendToggleBtn.addEventListener('click', (event) => {
+                event.stopPropagation(); // Prevent click from immediately closing due to document listener
+                legendPopover.classList.toggle('hidden');
+            });
+
+            document.addEventListener('click', (event) => {
+                if (!legendPopover.classList.contains('hidden') && !legendPopover.contains(event.target) && event.target !== legendToggleBtn) {
+                    legendPopover.classList.add('hidden');
+                }
+            });
         }
 
         document.addEventListener('DOMContentLoaded', initializeApp);
