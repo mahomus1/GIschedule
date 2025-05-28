@@ -101,10 +101,10 @@
         }
         .no-assignment { color: #9ca3af; font-style: italic; }
 
-        .fellow-buttons-details, .legend-details-wrapper { /* Shared style for <details> wrappers */
+        .fellow-buttons-details, .legend-button-wrapper { 
             margin-top: 1rem;
         }
-        .fellow-buttons-details summary { /* Specific for fellow buttons */
+        .fellow-buttons-details summary { 
             padding: 0.5rem 1rem;
             font-weight: 500;
             cursor: pointer;
@@ -241,27 +241,48 @@
             cursor: pointer;
         }
         .legend-button-wrapper {
-            position: relative; /* For positioning the popover */
-            margin-top: 1rem;
-            margin-left: 0.5rem; /* Space from other controls */
+            position: relative; 
+            margin-top: 0.5rem; 
+            margin-left: 0.5rem; 
         }
         #legend-toggle-btn {
-            padding: 0.3rem 0.6rem;
-            font-size: 0.8rem;
-            background-color: #e5e7eb; /* gray-200 */
-            border: 1px solid #d1d5db; /* gray-300 */
+            padding: 0.1rem 0.3rem; /* Further reduced padding */
+            font-size: 0.6rem;    /* Further reduced font size */
+            background-color: #e5e7eb; 
+            border: 1px solid #d1d5db; 
             border-radius: 0.375rem;
-            color: #374151; /* gray-700 */
+            color: #374151; 
         }
         #legend-toggle-btn:hover {
-            background-color: #d1d5db; /* gray-300 */
+            background-color: #d1d5db; 
         }
         #legend-popover {
+            position: absolute; 
             font-size: 0.8rem;
             color: #4b5563; 
-            min-width: 250px; /* Ensure enough width for content */
-            right: 0; /* Align to the right of the button wrapper */
+            min-width: 280px; 
+            right: 0; 
+            background-color: white;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 0.75rem;
+            z-index: 20;
         }
+        @media (max-width: 767px) { 
+            #legend-popover {
+                position: fixed; 
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%); 
+                width: 90vw; 
+                max-width: 400px; 
+                max-height: 80vh; 
+                overflow-y: auto;
+                right: auto; 
+            }
+        }
+
         #legend-popover p {
             margin-bottom: 0.25rem;
         }
@@ -308,7 +329,7 @@
                         </div>
                          <div class="legend-button-wrapper">
                             <button id="legend-toggle-btn">Legend ℹ️</button>
-                            <div id="legend-popover" class="hidden absolute mt-1 w-auto bg-white border border-gray-300 rounded-md shadow-lg p-3 z-20 right-0">
+                            <div id="legend-popover" class="hidden absolute mt-1"> 
                                 <p><span class="legend-symbol">📞</span> = On Call</p>
                                 <p class="mt-1"><em>Note: Call starts Friday 4:30 PM of the preceding week and ends Friday morning of the listed week.</em></p>
                                 <hr class="my-2">
@@ -914,7 +935,6 @@
                         cellHtml += ` <span class="call-icon-inline">📞</span>`;
                     }
                     
-                    // Check for specific holiday coverage for asterisks
                     specificHolidayCoverage.forEach(coverage => {
                         if (coverage.fellow === cellContent && 
                             coverage.date >= weekData.fullStartDate && 
@@ -922,7 +942,6 @@
                             cellHtml += ` <span class="asterisk-note">*</span>`;
                         }
                     });
-                     // Special handling for MD's last weekend call
                     if (cellContent === 'MD' && weekString === mdLastAssignmentWeekString) {
                          cellHtml += ` <span class="asterisk-note">**</span>`;
                     }
@@ -1274,7 +1293,7 @@
             }
 
             legendToggleBtn.addEventListener('click', (event) => {
-                event.stopPropagation(); // Prevent click from immediately closing due to document listener
+                event.stopPropagation(); 
                 legendPopover.classList.toggle('hidden');
             });
 
