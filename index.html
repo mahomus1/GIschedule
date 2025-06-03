@@ -8,138 +8,143 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f4f7f6;
+            background-color: #f4f7f6; /* Light grayish-blue background */
         }
-        .table-wrapper { 
+        .table-wrapper { /* Added to allow horizontal scroll on smaller screens if table is too wide */
             width: 100%;
-            overflow: auto; 
+            overflow: auto; /* Changed from overflow-x-auto to auto for general overflow */
         }
         .table-container {
             max-height: 70vh;
-            overflow: auto; 
-            border: 1px solid #d1d5db;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            transform-origin: top left; 
-            transition: transform 0.2s ease-out, width 0.2s ease-out, max-height 0.2s ease-out; 
+            overflow: auto; /* Ensures both vertical and horizontal scroll if needed */
+            border: 1px solid #d1d5db; /* gray-300 */
+            border-radius: 0.5rem; /* rounded-lg */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
+            transform-origin: top left; /* For zoom */
+            transition: transform 0.2s ease-out, width 0.2s ease-out, max-height 0.2s ease-out; /* For zoom */
         }
         table {
             width: 100%;
-            min-width: 1000px; 
+            min-width: 1000px; /* Minimum width for the table content */
             border-collapse: collapse;
         }
         th, td {
-            padding: 0.5rem 0.75rem;
-            font-size: 0.875rem; 
+            padding: 0.5rem 0.75rem; /* Smaller padding for mobile */
+            font-size: 0.875rem; /* text-sm for mobile */
             text-align: left;
-            border-bottom: 1px solid #e5e7eb;
-            transition: padding 0.2s ease-out, font-size 0.2s ease-out; 
+            border-bottom: 1px solid #e5e7eb; /* gray-200 */
+            transition: padding 0.2s ease-out, font-size 0.2s ease-out; /* For zoom */
         }
+        /* Ensure subsequent columns don't wrap excessively */
         tbody td:not(:first-child), thead th:not(:first-child) {
             white-space: nowrap;
         }
 
-        @media (min-width: 640px) { 
+        @media (min-width: 640px) { /* sm breakpoint */
             th, td {
-                padding: 0.75rem 1rem;
-                font-size: 1rem;
+                padding: 0.75rem 1rem; /* p-3 and p-4 for larger screens */
+                font-size: 1rem; /* text-base for larger screens */
             }
         }
 
         th {
-            background-color: #607d8b; 
+            background-color: #607d8b; /* Blue Grey 500 */
             color: white;
-            font-weight: 600;
+            font-weight: 600; /* semibold */
             position: sticky;
             top: 0;
             z-index: 10;
         }
-        tr:nth-child(even) { background-color: #eceff1; }
-        tr:nth-child(odd) { background-color: #ffffff; }
-        tr:hover { background-color: #cfd8dc; }
+        tr:nth-child(even) { background-color: #eceff1; } /* Blue Grey 50 */
+        tr:nth-child(odd) { background-color: #ffffff; } /* White */
+        tr:hover { background-color: #cfd8dc; } /* Blue Grey 100 */
 
+        /* Sticky first column (Week) */
         thead th:first-child {
             position: sticky;
             left: 0;
-            z-index: 12; 
-            background-color: #607d8b; 
-            white-space: normal; 
+            z-index: 12; /* Higher than other th cells, but lower than popovers */
+            background-color: #607d8b; /* Same as other th */
+            white-space: normal; /* Allow week text to wrap if needed */
         }
         tbody td:first-child {
             position: sticky;
             left: 0;
-            z-index: 5; 
-            white-space: normal; 
-            min-width: 80px; 
-            vertical-align: top; 
-            background-color: white; 
+            z-index: 5; /* Lower than th, but above normal cells */
+            white-space: normal; /* Allow week text to wrap */
+            min-width: 80px; /* Ensure week column has some base width */
+            vertical-align: top; /* Align content to top for holiday indicators */
+            background-color: white; /* Needs a background to cover cells scrolling underneath */
             transition: padding 0.2s ease-out, font-size 0.2s ease-out, min-width 0.2s ease-out;
         }
-        tr:nth-child(odd) td:first-child { background-color: #ffffff; } 
-        tr:nth-child(even) td:first-child { background-color: #eceff1; } 
-        tr:hover td:first-child { background-color: #cfd8dc; } 
+        /* Ensure sticky column background matches row background */
+        tr:nth-child(odd) td:first-child { background-color: #ffffff; } /* White */
+        tr:nth-child(even) td:first-child { background-color: #eceff1; } /* Blue Grey 50 */
+        tr:hover td:first-child { background-color: #cfd8dc; } /* Blue Grey 100 on hover */
 
-        .controls-wrapper { 
-             margin-bottom: 1.5rem;
+        /* Controls styling */
+        .controls-wrapper { /* Added wrapper for better spacing control */
+             margin-bottom: 1.5rem; /* mb-6 */
         }
         .controls {
             background-color: #ffffff;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 1rem; /* p-4 */
+            border-radius: 0.5rem; /* rounded-lg */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
         }
-        @media (min-width: 640px) { 
-            .controls { padding: 1.5rem; }
+        @media (min-width: 640px) { /* sm breakpoint */
+            .controls { padding: 1.5rem; } /* p-6 for larger screens */
         }
         select {
-            padding: 0.5rem 0.75rem; font-size: 0.875rem;
-            border-radius: 0.375rem; border: 1px solid #d1d5db; 
-            background-color: white; margin-top: 0.25rem;
+            padding: 0.5rem 0.75rem; font-size: 0.875rem; /* Tailwind p-2, text-sm */
+            border-radius: 0.375rem; border: 1px solid #d1d5db; /* rounded-md, border-gray-300 */
+            background-color: white; margin-top: 0.25rem; /* mt-1 */
         }
-        @media (min-width: 640px) { 
-            select { font-size: 1rem; }
+        @media (min-width: 640px) { /* sm breakpoint */
+            select { font-size: 1rem; } /* text-base for larger screens */
         }
-        .no-assignment { color: #9ca3af; font-style: italic; }
+        .no-assignment { color: #9ca3af; font-style: italic; } /* gray-400 */
 
-        .fellow-buttons-details, .legend-button-wrapper { 
-            margin-top: 1rem;
+        /* Fellow buttons and details */
+        .fellow-buttons-details, .legend-button-wrapper { /* Grouped for margin */
+            margin-top: 1rem; /* mt-4 */
         }
-        .fellow-buttons-details summary { 
+        .fellow-buttons-details summary { /* Style the summary like a button */
             padding: 0.5rem 1rem;
-            font-weight: 500;
+            font-weight: 500; /* medium */
             cursor: pointer;
-            background-color: #f3f4f6; 
-            border: 1px solid #e5e7eb; 
-            border-radius: 0.375rem; 
-            list-style-position: inside; 
-            outline: none; 
+            background-color: #f3f4f6; /* gray-100 */
+            border: 1px solid #e5e7eb; /* gray-200 */
+            border-radius: 0.375rem; /* rounded-md */
+            list-style-position: inside; /* Keeps marker inside */
+            outline: none; /* Remove focus outline for summary */
         }
         .fellow-buttons-details[open] summary {
             border-bottom-left-radius: 0;
             border-bottom-right-radius: 0;
-            border-bottom: none; 
+            border-bottom: none; /* Remove bottom border when open */
         }
         .fellow-buttons-container {
             display: flex; flex-wrap: wrap;
             gap: 0.5rem; align-items: center;
-            padding: 0.75rem; 
-            border: 1px solid #e5e7eb; 
+            padding: 0.75rem; /* p-3 */
+            border: 1px solid #e5e7eb; /* gray-200 */
             border-top: none;
             border-bottom-left-radius: 0.375rem;
             border-bottom-right-radius: 0.375rem;
         }
 
 
-        .fellow-btn, .action-btn { 
+        .fellow-btn, .action-btn { /* Base style for fellow and action buttons */
             background-color: #90a4ae; color: white; padding: 0.5rem 0.75rem;
             border: none; border-radius: 0.375rem; cursor: pointer;
-            transition: background-color 0.2s, box-shadow 0.2s, padding 0.2s, font-size 0.2s; 
+            transition: background-color 0.2s, box-shadow 0.2s, padding 0.2s, font-size 0.2s; /* Added padding and font-size for zoom */
             font-size: 0.875rem;
         }
         .fellow-btn:hover, .action-btn:hover { background-color: #78909c; }
         .fellow-btn.active {
-            background-color: #546e7a; 
-            box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #546e7a; 
+            background-color: #546e7a; /* Darker shade for active */
+            box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #546e7a; /* Ring effect */
         }
         .clear-highlights-btn {
             background-color: #ef5350; color: white; padding: 0.5rem 1rem;
@@ -149,85 +154,71 @@
         .clear-highlights-btn:hover { background-color: #e53935; }
         
         #export-ics-btn {
-            background-color: #4CAF50; 
+            background-color: #4CAF50; /* Green */
             margin-left: 1rem;
         }
         #export-ics-btn:hover {
-             background-color: #388E3C;
+             background-color: #388E3C; /* Darker Green */
         }
 
+        /* Highlighting styles */
         .highlight-cell-base { font-weight: bold; position: relative; }
-        .highlight-zt { background-color: #fff59d !important; } 
-        .highlight-mm { background-color: #a5d6a7 !important; } 
-        .highlight-xd { background-color: #b39ddb !important; } 
-        .highlight-df { background-color: #81d4fa !important; } 
-        .highlight-mg { background-color: #ffab91 !important; } 
-        .highlight-im { background-color: #ce93d8 !important; } 
-        .highlight-aa { background-color: #f48fb1 !important; } 
-        .highlight-ez { background-color: #9fa8da !important; } 
-        .highlight-am { background-color: #ffe082 !important; } 
-        .highlight-md { background-color: #ef9a9a !important; } 
+        .highlight-zt { background-color: #fff59d !important; } /* yellow-200 */
+        .highlight-mm { background-color: #a5d6a7 !important; } /* green-200 */
+        .highlight-xd { background-color: #b39ddb !important; } /* deep-purple-200 */
+        .highlight-df { background-color: #81d4fa !important; } /* light-blue-200 */
+        .highlight-mg { background-color: #ffab91 !important; } /* deep-orange-200 */
+        .highlight-im { background-color: #ce93d8 !important; } /* purple-200 */
+        .highlight-aa { background-color: #f48fb1 !important; } /* pink-200 */
+        .highlight-ez { background-color: #9fa8da !important; } /* indigo-200 */
+        .highlight-am { background-color: #ffe082 !important; } /* amber-200 */
+        .highlight-md { background-color: #ef9a9a !important; } /* red-200 */
         
-        .current-week-highlight td { background-color: #c8e6c9 !important; }
-        .current-week-highlight td:first-child { background-color: #c8e6c9 !important; }
+        /* Current week highlight */
+        .current-week-highlight td { background-color: #c8e6c9 !important; } /* Light green, ensure it overrides other backgrounds */
+        .current-week-highlight td:first-child { background-color: #c8e6c9 !important; } /* Ensure sticky column also gets highlighted */
         
-        .toggle-switch-label {
-            margin-top: 1rem; display: flex; align-items: center;
-            cursor: pointer; font-size: 0.875rem; color: #374151; 
-            transition: font-size 0.2s;
-        }
-        .toggle-switch-label input[type="checkbox"] { opacity: 0; width: 0; height: 0; }
-        .toggle-switch-slider {
-            width: 34px; height: 20px; background-color: #d1d5db; 
-            border-radius: 9999px; position: relative;
-            transition: background-color 0.2s; margin-right: 0.5rem; 
-        }
-        .toggle-switch-slider::before {
-            content: ""; position: absolute; height: 16px; width: 16px;
-            left: 2px; bottom: 2px; background-color: white;
-            border-radius: 50%; transition: transform 0.2s;
-        }
-        input:checked + .toggle-switch-slider { background-color: #607d8b; }
-        input:checked + .toggle-switch-slider::before { transform: translateX(14px); }
-
+        /* Call icon and asterisk */
         .call-icon-inline { margin-left: 0.25rem; font-size: 0.75em; }
         .asterisk-note {
-            color: #000000; 
-            font-weight: bold; 
-            margin-left: 1px; 
-            font-size: 0.9em; 
+            color: #000000; /* Black for visibility */
+            font-weight: bold; /* Make it stand out */
+            margin-left: 1px; /* Small space */
+            font-size: 0.9em; /* Slightly smaller than cell text */
         }
         
+        /* Holiday indicator styles */
         .holiday-indicator {
-            display: flex; 
-            align-items: flex-start; 
-            margin-bottom: 1px; 
-            font-size: 0.9em; 
-            white-space: normal; 
+            display: flex; /* Align emoji and text nicely */
+            align-items: flex-start; /* Align items to the start if text wraps */
+            margin-bottom: 1px; /* Small space between multiple holidays */
+            font-size: 0.9em; /* Slightly smaller than main cell text */
+            white-space: normal; /* Allow holiday text to wrap */
             line-height: 1.1;
         }
-        .holiday-indicator .emoji { 
-            font-size: 1em; 
-            margin-right: 2px; 
-            flex-shrink: 0; 
+        .holiday-indicator .emoji { /* Style for the emoji part */
+            font-size: 1em; /* Relative to parent .holiday-indicator */
+            margin-right: 2px; /* Space between emoji and text */
+            flex-shrink: 0; /* Prevent emoji from shrinking if text is long */
         }
-        .holiday-indicator .date-text { 
-            font-size: 0.9em; 
-            color: #000000; 
-            white-space: normal; 
-            word-break: break-word; 
+        .holiday-indicator .date-text { /* Style for the date part */
+            font-size: 0.9em; /* Slightly smaller to fit */
+            color: #000000; /* Darker text for readability */
+            white-space: normal; /* Allow text to wrap */
+            word-break: break-word; /* Break long words if necessary */
         }
-        .week-cell-content { 
-            display: block; 
-            white-space: normal; 
-            word-break: break-all; 
+        .week-cell-content { /* Wrapper for the main week string */
+            display: block; /* Allows margin/padding if needed, and ensures it's on its own line */
+            white-space: normal; /* Allow week string to wrap */
+            word-break: break-all; /* Break long date ranges if needed */
         }
         .holiday-indicators-container {
-            display: block; 
-            margin-top: 1px; 
+            display: block; /* Take full width of the cell for alignment */
+            margin-top: 1px; /* Space below the main week string */
             line-height: 1.1;
         }
         
+        /* Zoom slider styles */
         .zoom-slider-container {
             display: flex;
             align-items: center;
@@ -237,49 +228,51 @@
             color: #374151;
         }
         .zoom-slider-container input[type="range"] {
-            width: 120px; 
+            width: 120px; /* Or adjust as needed */
             cursor: pointer;
         }
+        /* Legend Popover Styles */
         .legend-button-wrapper {
-            position: relative; 
-            margin-top: 0.5rem; 
-            margin-left: 0.5rem; 
+            position: relative; /* For absolute positioning of popover */
+            margin-top: 0.5rem; /* Space from other controls */
+            margin-left: 0.5rem; /* Space from zoom slider */
         }
         #legend-toggle-btn {
             padding: 0.1rem 0.3rem; /* Further reduced padding */
             font-size: 0.6rem;    /* Further reduced font size */
-            background-color: #e5e7eb; 
-            border: 1px solid #d1d5db; 
+            background-color: #e5e7eb; /* gray-200 */
+            border: 1px solid #d1d5db; /* gray-300 */
             border-radius: 0.375rem;
-            color: #374151; 
+            color: #374151; /* gray-700 */
         }
         #legend-toggle-btn:hover {
-            background-color: #d1d5db; 
+            background-color: #d1d5db; /* gray-300 */
         }
         #legend-popover {
-            position: absolute; 
+            position: absolute; /* Position relative to wrapper */
             font-size: 0.8rem;
-            color: #4b5563; 
-            min-width: 280px; 
-            right: 0; 
+            color: #4b5563; /* gray-600 */
+            min-width: 280px; /* Minimum width */
+            right: 0; /* Align to the right of the button */
             background-color: white;
             border: 1px solid #d1d5db;
             border-radius: 0.375rem;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             padding: 0.75rem;
-            z-index: 20;
+            z-index: 20; /* Ensure it's above table headers */
         }
-        @media (max-width: 767px) { 
+        /* Responsive legend for smaller screens */
+        @media (max-width: 767px) { /* md breakpoint */
             #legend-popover {
-                position: fixed; 
+                position: fixed; /* Fixed position to overlay content */
                 top: 50%;
                 left: 50%;
-                transform: translate(-50%, -50%); 
-                width: 90vw; 
-                max-width: 400px; 
-                max-height: 80vh; 
+                transform: translate(-50%, -50%); /* Center it */
+                width: 90vw; /* Responsive width */
+                max-width: 400px; /* Max width for larger small screens */
+                max-height: 80vh; /* Max height to prevent overflow */
                 overflow-y: auto;
-                right: auto; 
+                right: auto; /* Reset right positioning */
             }
         }
 
@@ -289,9 +282,9 @@
          #legend-popover .legend-item {
             margin-bottom: 0.3rem;
         }
-        #legend-popover .legend-symbol { 
+        #legend-popover .legend-symbol { /* For aligning symbols like * */
             display: inline-block;
-            width: 20px; 
+            width: 20px; /* Adjust as needed for alignment */
             text-align: center;
             font-weight: bold;
         }
@@ -300,37 +293,26 @@
         }
     </style>
 </head>
-<body class="p-2 sm:p-4 md:p-8"> 
-    <div class="container mx-auto">
+<body class="p-2 sm:p-4 md:p-8"> <div class="container mx-auto">
         <h1 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-center text-gray-700">Fellows Schedule</h1>
 
-        <div class="controls-wrapper"> 
-            <div class="controls">
+        <div class="controls-wrapper"> <div class="controls">
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
                     <div>
                         <label id="fellow-select-label" for="fellow-select" class="block text-base sm:text-lg font-medium text-gray-700 mb-1 sm:mb-2">Select Fellow</label>
                         <div class="flex items-center">
                             <select id="fellow-select" class="w-full sm:w-auto p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                                 <option value="all">Show All Schedules</option>
-                            </select>
+                                </select>
                             <button id="export-ics-btn" class="action-btn hidden" title="Export to iCalendar (.ics)">🗓️ Export ICS</button>
                         </div>
                     </div>
                     <div class="flex flex-col items-start sm:items-end mt-4 sm:mt-0">
-                        <label id="hide-previous-weeks-label" class="toggle-switch-label"> 
-                            <input type="checkbox" id="hide-previous-weeks-toggle" checked> 
-                            <span class="toggle-switch-slider"></span>
-                            Hide Previous Weeks
-                        </label>
                         <div id="zoom-slider-container" class="zoom-slider-container mt-2">
-                            <label for="zoom-slider">Zoom Table:</label> 
-                            <input type="range" id="zoom-slider" min="0.3" max="1.0" value="1" step="0.05"> 
-                            <span id="zoom-value">100%</span> 
-                        </div>
+                            <label for="zoom-slider">Zoom Table:</label> <input type="range" id="zoom-slider" min="0.3" max="1.0" value="1" step="0.05"> <span id="zoom-value">100%</span> </div>
                          <div class="legend-button-wrapper">
                             <button id="legend-toggle-btn">Legend ℹ️</button>
-                            <div id="legend-popover" class="hidden absolute mt-1"> 
-                                <p><span class="legend-symbol">📞</span> = On Call</p>
+                            <div id="legend-popover" class="hidden absolute mt-1"> <p><span class="legend-symbol">📞</span> = On Call</p>
                                 <p class="mt-1"><em>Note: Call starts Friday 4:30 PM of the preceding week and ends Friday morning of the listed week.</em></p>
                                 <hr class="my-2">
                                 <p><strong>Specific Holiday Coverage:</strong></p>
@@ -341,8 +323,9 @@
                                 <p><span class="legend-symbol">*</span> EZ: Black Friday (Nov 28, 2025), MLK Day (Jan 19, 2026)</p>
                                 <p><span class="legend-symbol">*</span> AM: Juneteenth (Jun 19, 2025)</p>
                                 <p><span class="legend-symbol">*</span> MD: New Year's Day (Jan 1, 2026)</p>
-                                <p><span class="legend-symbol">**</span> MD: Last Weekend Call</p>
-                            </div>
+                                <hr class="my-1">
+                                <p><span class="legend-symbol">**</span> Last Weekend Call (MD, AM)</p>
+                             </div>
                         </div>
                     </div>
                 </div>
@@ -355,8 +338,7 @@
         </div>
 
 
-        <div class="table-wrapper"> 
-            <div id="schedule-display" class="table-container">
+        <div class="table-wrapper"> <div id="schedule-display" class="table-container">
                 </div>
         </div>
         <div id="no-data-message" class="hidden text-center text-gray-500 mt-6 sm:mt-8 text-lg sm:text-xl">
@@ -365,36 +347,37 @@
         </div>
 
     <script>
-        const mainScheduleCsvData = `Week,UMH 1,UMH2,VA1,VA 2,VA 3,VA 4,Amb1,EOD1,EOD2,Research,Elective,Vacations
+        // Raw CSV data for main schedule
+        const mainScheduleCsvData = `Week,UMH 1,UMH2,VA1,VA 2,VA 3,VA 4*,Amb1,EOD1,EOD2,Research,Elective,Vacation
 6/30-7/4,MG,ZT,DF,XD,,,IM,MM,,,,
 7/7- 7/11,ZT,MG,IM,MM,,,DF,XD,,,,
-7/14-7/18,IM,DF,MG,EZ,AM,MM,AA,XD,ZT,MD,,
+7/14-7/18,IM,DF,MG,EZ,MM,AM,AA,XD,ZT,MD,,
 7/21-7/25,DF,IM,MG,ZT,EZ,MD,AM,MM,XD,,,AA
-7/28-8/1,ZT,MG,AA,MD,XD,DF,EZ,MM,,AM,,IM
+7/28-8/1,ZT,MG,AA,MD,DF,XD,EZ,MM,,AM,,IM
 8/4-8/8,MG,ZT,AM,DF,MM,AA,MD,XD,,EZ,,IM
-8/11- 8/15,DF,XD,MD,MG,IM,AA,EZ,ZT,MM,,,AM
-8/18-8/22,XD,DF,EZ,IM,MG,AA,AM,ZT,,MD,MM,
-8/25-8/29,MM,AM,MD,DF,MG,IM,EZ,ZT,,AA,,XD
-9/1-9/5,AM,MM,IM,MG,DF,,MD,XD,ZT,EZ,,AA
-9/8-9/12,IM,AA,XD,MD,DF,AM,EZ,ZT,MM,,,MG
+8/11- 8/15,DF,XD,MD,MG,AA,IM,EZ,ZT,MM,,,AM
+8/18-8/22,XD,DF,EZ,IM,AA,MG,AM,ZT,,MD,MM,
+8/25-8/29,MM,AM,MD,DF,IM,MG,EZ,ZT,,AA,,XD
+9/1-9/5,AM,MM,DF,MG,IM,,MD,ZT,,EZ,XD,AA
+9/8-9/12,IM,AA,XD,MD,AM,DF,EZ,MM,ZT,,,MG
 9/15-9/19,AA,IM,MD,MG,DF,EZ,AM,XD,ZT,MM,,
 9/22-9/26,MG,MD,DF,EZ,IM,ZT,AA,XD,,AM,MM,
-9/29-10/3,MD,MG,AM,XD,AA,IM,DF,MM,,EZ,ZT,
+9/29-10/3,MD,MG,AM,XD,IM,AA,DF,MM,,EZ,ZT,
 10/6-10/10,EZ,DF,AM,MG,IM,,AA,XD,ZT,MD,,MM
 10/13-10/17,DF,EZ,AA,AM,IM,MG,MD,ZT,XD,MM,,
 10/20-10/24,AA,AM,MD,XD,MG,DF,EZ,ZT,MM,IM,,
-10/27-10/31,AM,AA,EZ,IM,MG,XD,MD,MM,,DF,,ZT
-11/3-11/7,IM,MD,DF,AM,ZT,,MG,MM,,AA,XD,EZ
-11/10-11/14,MD,IM,MG,EZ,DF,,AM,ZT,XD,MM,,AA
+10/27-10/31,AM,AA,EZ,MG,IM,XD,MD,MM,,DF,,ZT
+11/3-11/7,IM,MD,DF,AM,ZT,,MG,XD,MM,AA,,EZ
+11/10-11/14,MD,IM,MG,EZ,DF,,AM,XD,ZT,MM,,AA
 11/17-11/21,EZ,MD,MG,AA,DF,,IM,ZT,XD,AM,,MM
-11/24-11/28,MD,EZ,IM,DF,MG,,AA,MM,ZT,XD,,AM
-12/1-12/5,AA,AM,XD,EZ,MG,,DF,ZT,,IM,MM,MD
-12/8-12/12,AM,AA,IM,DF,EZ,,MG,XD,MM,,ZT,MD
+11/24-11/28,MD,EZ,IM,DF,MG,,AA,XD,ZT,,MM,AM
+12/1-12/5,AA,AM,XD,EZ,MG,,DF,ZT,MM,IM,,MD
+12/8-12/12,AM,AA,IM,DF,EZ,,MG,MM,,XD,ZT,MD
 12/15-12/19,DF,EZ,IM,AA,MG,,AM,MM,XD,MD,,ZT
-12/22-12-26,EZ,DF,MM,AA,MG,MD,IM,XD,,,AM,ZT
-12/29-1/2/26,MG,MD,IM,XD,EZ,AM,AA,MM,,ZT,,DF
+12/22-12-26,EZ,DF,MM,AA,MG,MD,IM,XD,,, -,ZT&AM
+12/29-1/2/26,MG,MD,IM,XD,AM,EZ,AA,MM,,ZT,,DF
 01/05-01/09,MD,MG,AA,AM,IM,MM,EZ,ZT,,DF,,XD
-01/12-01/16,AA,AM,MD,IM,DF,EZ,MG,MM,ZT,,,XD
+01/12-01/16,AA,AM,MD,DF,IM,EZ,MG,MM,ZT,,,XD
 01/19-01/23,AM,AA,EZ,MM,MD,DF,IM,ZT,,XD,,MG
 01/26-01/30,MM,EZ,IM,AA,DF,,MD,ZT,,AM,XD,MG
 02/02-02/06,EZ,MM,ZT,DF,AM,MD,AA,XD,,MG,,IM
@@ -408,17 +391,18 @@
 03/30-04/03,MD,MG,ZT,AA,IM,AM,EZ,MM,,XD,,DF
 04/06-04/10,AA,AM,EZ,IM,MG,,MD,XD,ZT,,MM,DF
 04/13-04/17,AM,AA,MG,MD,EZ,IM,DF,ZT,XD,,,MM
-04/20-04/24,DF,EZ,AA,MD,MG,IM,AM,ZT,XD,,,MM
+04/20-04/24,DF,EZ,AA,MD,IM,MG,AM,ZT,XD,,,MM
 04/27-05/01,EZ,DF,AA,AM,ZT,,IM,XD,MG,MM,,MD
 05/04-05/08,AM,IM,EZ,MM,ZT,,AA,XD,DF,MG,,MD
 5/11-5/15,IM,AM,MD,ZT,DF,,EZ,MM,XD,AA,,MG
 05/18-05/22,MD,MG,MM,EZ,AA,,IM,XD,ZT,DF,,AM
-05/25-05/29,MG,MD,AM,,XD,AA,EZ,MM,IM,ZT,,DF
+05/25-05/29,MG,MD,AM,XD,AA,,EZ,MM,IM,ZT,,DF
 06/01-06/05,DF,AA,AM,MD,IM,,MG,ZT,MM,XD,,EZ
-06/08-06/12,AA,DF,EZ,IM,MD,,AM,MM,ZT,MG,,XD
+06/08-06/12,AA,DF,EZ,IM,MD,,AM,ZT,MM,MG,,XD
 06/15-06/19,EZ,IM,DF,AM,MG,AA,MD,MM,XD,ZT,,
 06/22-06/26,IM,EZ,MD,MG,DF,AM,AA,XD,MM,,,ZT`;
 
+        // Raw CSV data for call schedule
         const callScheduleCsvData = `Week,Call
 6/30-7/4,XD
 7/7- 7/11,MG
@@ -473,11 +457,14 @@
 06/15-06/19,AM
 06/22-06/26,MG`;
 
-        let ALL_FELLOWS = ["ZT", "MM", "XD", "DF", "MG", "IM", "AA", "EZ", "AM", "MD"]; 
+        // Fellow initials and names (can be expanded)
+        let ALL_FELLOWS = ["ZT", "MM", "XD", "DF", "MG", "IM", "AA", "EZ", "AM", "MD"]; // Will be dynamically populated
         
+        // Use actual current date for calculations, set time to 00:00:00 for day comparisons
         const ACTUAL_CURRENT_DATE = new Date(); 
         ACTUAL_CURRENT_DATE.setHours(0,0,0,0); 
         
+        // For simulating a specific current date for testing, otherwise use actual date
         const CURRENT_SIMULATED_MONTH_DAY = { month: ACTUAL_CURRENT_DATE.getMonth() + 1, day: ACTUAL_CURRENT_DATE.getDate() };
 
 
@@ -522,16 +509,17 @@
             { name: "Memorial Day", date: new Date(2026, 4, 25), indicator: "⚰️🕯" },
             { name: "Eid al-Adha", date: new Date(2026, 4, 27), indicator: "🐑" },
             { name: "Juneteenth", date: new Date(2026, 5, 19), indicator: "✊🏿" },
-            { name: "4th of July", date: new Date(2026, 6, 4), indicator: "🇺🇸" },
+            { name: "4th of July", date: new Date(2026, 6, 4), indicator: "🇺🇸" }, // Note: July 4th, 2026 is a Saturday
             { name: "Labor Day", date: new Date(2026, 8, 7), indicator: "👷‍♂️" },
             { name: "Thanksgiving", date: new Date(2026, 10, 26), indicator: "🦃" },
             { name: "Black Friday", date: new Date(2026, 10, 27), indicator: "🛍️💸" },
             { name: "Christmas", date: new Date(2026, 11, 25), indicator: "🎄🎅" } 
         ];
+        // Normalize holiday dates to midnight for consistent comparison
         holidays.forEach(h => { 
             if (h.date) h.date.setHours(0,0,0,0);
             if (h.startDate) h.startDate.setHours(0,0,0,0);
-            if (h.endDate) h.endDate.setHours(23,59,59,999);
+            if (h.endDate) h.endDate.setHours(23,59,59,999); // End of the day for ranges
         });
 
         const specificHolidayCoverage = [
@@ -548,19 +536,20 @@
         specificHolidayCoverage.forEach(h => h.date.setHours(0,0,0,0));
 
 
+        // Global state variables
         let parsedMainSchedule = []; 
         let mainScheduleHeaders = [];
         let callScheduleMap = {}; 
         let activeHighlights = new Set(); 
-        let hidePreviousWeeks = true; 
         let currentZoomLevel; 
-        let mdLastAssignmentWeekString = null; 
+        let mdLastAssignmentWeekString = null; // Stores the week string for MD's last assignment
+        let amLastAssignmentWeekString = null; // Stores the week string for AM's last assignment
 
+        // DOM element references
         const fellowSelect = document.getElementById('fellow-select');
         const scheduleDisplayContainer = document.getElementById('schedule-display');
         const noDataMessage = document.getElementById('no-data-message');
         const fellowButtonsContainer = document.getElementById('fellow-buttons-container');
-        const hidePreviousWeeksToggle = document.getElementById('hide-previous-weeks-toggle'); 
         const zoomSlider = document.getElementById('zoom-slider'); 
         const zoomValueDisplay = document.getElementById('zoom-value');
         const exportIcsBtn = document.getElementById('export-ics-btn');
@@ -568,6 +557,7 @@
         const legendToggleBtn = document.getElementById('legend-toggle-btn');
         const legendPopover = document.getElementById('legend-popover');
 
+        // Base sizing parameters for responsive zoom
         let BASE_FONT_SIZE_TD_REM;
         let BASE_PADDING_TD_Y_REM;
         let BASE_PADDING_TD_X_REM;
@@ -575,25 +565,33 @@
         let BASE_FONT_SIZE_HOLIDAY_CONTAINER_REM;
         let BASE_FONT_SIZE_CALL_ICON_EM;
 
+        /**
+         * Sets base sizing parameters based on viewport width.
+         * This is called on init and potentially on resize if dynamic adjustments are needed.
+         */
         function setBaseSizingParameters() {
-            const isMobile = window.innerWidth < 768;
+            const isMobile = window.innerWidth < 768; // Using 768px as a common breakpoint for "mobile-like" styling
             if (isMobile) {
-                BASE_FONT_SIZE_TD_REM = 0.7; 
+                BASE_FONT_SIZE_TD_REM = 0.7; // Smaller base font for mobile
                 BASE_PADDING_TD_Y_REM = 0.2;
                 BASE_PADDING_TD_X_REM = 0.3;
-                BASE_MIN_WIDTH_FIRST_COL_PX = 70; 
+                BASE_MIN_WIDTH_FIRST_COL_PX = 70; // Slightly smaller min-width for first column
                 BASE_FONT_SIZE_HOLIDAY_CONTAINER_REM = 0.55;
                 BASE_FONT_SIZE_CALL_ICON_EM = 0.65;
-            } else { 
-                BASE_FONT_SIZE_TD_REM = 0.875; 
+            } else { // Desktop or larger tablets
+                BASE_FONT_SIZE_TD_REM = 0.875; // Default text-sm
                 BASE_PADDING_TD_Y_REM = 0.5;
                 BASE_PADDING_TD_X_REM = 0.75;
-                BASE_MIN_WIDTH_FIRST_COL_PX = 80; 
+                BASE_MIN_WIDTH_FIRST_COL_PX = 80; // Default min-width for first column
                 BASE_FONT_SIZE_HOLIDAY_CONTAINER_REM = 0.6;
                 BASE_FONT_SIZE_CALL_ICON_EM = 0.7;
             }
         }
 
+        /**
+         * Applies zoom styles to table elements.
+         * @param {number} zoomFactor - The current zoom factor (e.g., 0.5 to 1.0).
+         */
         function applyZoomStyles(zoomFactor) {
             const table = scheduleDisplayContainer.querySelector('table');
             if (!table) return;
@@ -601,33 +599,44 @@
             const allTh = table.querySelectorAll('th');
             const allTd = table.querySelectorAll('td');
             
+            // Apply styles to header cells (th)
             allTh.forEach(el => {
-                el.style.padding = `${BASE_PADDING_TD_Y_REM * zoomFactor * 0.9}rem ${BASE_PADDING_TD_X_REM * zoomFactor * 0.9}rem`;
-                el.style.fontSize = `${BASE_FONT_SIZE_TD_REM * (0.95 + (zoomFactor - 0.95)*0.5) }rem`; 
+                el.style.padding = `${BASE_PADDING_TD_Y_REM * zoomFactor * 0.9}rem ${BASE_PADDING_TD_X_REM * zoomFactor * 0.9}rem`; // Slightly less padding for th
+                el.style.fontSize = `${BASE_FONT_SIZE_TD_REM * (0.95 + (zoomFactor - 0.95)*0.5) }rem`; // Slightly reduced font scaling for th
             });
 
+            // Apply styles to data cells (td)
             allTd.forEach(el => {
                 el.style.padding = `${BASE_PADDING_TD_Y_REM * zoomFactor}rem ${BASE_PADDING_TD_X_REM * zoomFactor}rem`;
                 el.style.fontSize = `${BASE_FONT_SIZE_TD_REM * zoomFactor}rem`;
             });
 
+            // Apply styles to first column sticky cells
             const firstColumnTds = table.querySelectorAll('tbody td:first-child');
             firstColumnTds.forEach(el => {
                 el.style.minWidth = `${BASE_MIN_WIDTH_FIRST_COL_PX * zoomFactor}px`;
             });
 
+            // Apply styles to holiday indicators
             const holidayContainers = table.querySelectorAll('.holiday-indicators-container');
             holidayContainers.forEach(hc => {
                 hc.style.fontSize = `${BASE_FONT_SIZE_HOLIDAY_CONTAINER_REM * zoomFactor}rem`;
             });
             
+            // Apply styles to call icons
             const callIcons = table.querySelectorAll('.call-icon-inline');
             callIcons.forEach(ci => {
-                ci.style.fontSize = `${BASE_FONT_SIZE_CALL_ICON_EM * zoomFactor}em`; 
+                ci.style.fontSize = `${BASE_FONT_SIZE_CALL_ICON_EM * zoomFactor}em`; // Zoom relative to parent font size
             });
         }
 
 
+        /**
+         * Parses the main schedule CSV data string into an array of objects.
+         * Also discovers all unique fellow initials from the data.
+         * @param {string} data - The CSV data as a string.
+         * @returns {Array<Object>} An array of schedule row objects.
+         */
         function parseMainScheduleCSV(data) {
             const lines = data.trim().split('\n');
             if (lines.length === 0) {
@@ -635,7 +644,7 @@
                 return [];
             }
             mainScheduleHeaders = lines[0].split(',').map(h => h.trim());
-            let yearContext = 2025; 
+            let yearContext = 2025; // Initial year context for parsing week dates
             const schedule = lines.slice(1).map(line => {
                 const values = line.split(',');
                 const rowData = {};
@@ -643,25 +652,31 @@
                      rowData[header] = (values[index] || '').trim();
                 });
                 
+                // Get the week string, e.g., "6/30-7/4" or "12/29-1/2/26"
                 const weekString = rowData['Week'];
-                if (!weekString || weekString.trim() === "") return null; 
+                if (!weekString || weekString.trim() === "") return null; // Skip empty or invalid week strings
 
+                // Convert week string to full Date objects for start and end
                 const fullDateRange = getFullDateObjectsForWeek(weekString, yearContext);
                 rowData.fullStartDate = fullDateRange.start;
                 rowData.fullEndDate = fullDateRange.end;
-                yearContext = fullDateRange.nextYearContext; 
+                yearContext = fullDateRange.nextYearContext; // Update year context for next iteration
 
+                // Skip row if all non-date values are empty (handles trailing empty lines in CSV)
                 const nonDateValues = mainScheduleHeaders.slice(1).map(h => rowData[h]);
                 if (nonDateValues.every(val => val.trim() === '')) return null; 
                 return rowData;
-            }).filter(row => row !== null);
+            }).filter(row => row !== null); // Remove any null rows
             
+            // Dynamically discover fellow initials from the parsed schedule
             const discoveredFellows = new Set();
-            const weekHeader = mainScheduleHeaders[0].toLowerCase();
+            const weekHeader = mainScheduleHeaders[0].toLowerCase(); // Assuming first header is 'Week'
             schedule.forEach(row => {
                 for (const header of mainScheduleHeaders) {
                     if (header.toLowerCase() !== weekHeader && row[header]) {
                         const initials = row[header].trim();
+                        // Basic validation for fellow initials (e.g., 2-3 uppercase letters)
+                        // Allow '&' for combined entries like ZT&AM but don't add them to ALL_FELLOWS
                         if (initials && initials.length <= 3 && /^[A-Z]+$/.test(initials)) {
                             discoveredFellows.add(initials);
                         }
@@ -670,28 +685,50 @@
             });
             ALL_FELLOWS = Array.from(discoveredFellows).sort();
 
+            // Find MD's last assignment week (excluding 'Vacations' and 'Vacation')
             mdLastAssignmentWeekString = null;
             for (let i = schedule.length - 1; i >= 0; i--) {
                 const weekData = schedule[i];
                 for (const header of mainScheduleHeaders) {
-                    if (header.toLowerCase() !== 'week' && header.toLowerCase() !== 'vacations' && weekData[header] === 'MD') {
+                    const lowerHeader = header.toLowerCase();
+                    if (lowerHeader !== 'week' && lowerHeader !== 'vacations' && lowerHeader !== 'vacation' && weekData[header] === 'MD') {
                         mdLastAssignmentWeekString = weekData['Week'];
                         break; 
                     }
                 }
-                if (mdLastAssignmentWeekString) break;
+                if (mdLastAssignmentWeekString) break; 
+            }
+
+            // Find AM's last assignment week (excluding 'Vacations' and 'Vacation')
+            amLastAssignmentWeekString = null;
+            for (let i = schedule.length - 1; i >= 0; i--) {
+                const weekData = schedule[i];
+                for (const header of mainScheduleHeaders) {
+                    const lowerHeader = header.toLowerCase();
+                    if (lowerHeader !== 'week' && lowerHeader !== 'vacations' && lowerHeader !== 'vacation' && weekData[header] === 'AM') {
+                        amLastAssignmentWeekString = weekData['Week'];
+                        break; 
+                    }
+                }
+                if (amLastAssignmentWeekString) break;
             }
 
             return schedule;
         }
 
+        /**
+         * Parses the call schedule CSV data string into a map.
+         * @param {string} data - The CSV data as a string.
+         * @returns {Object} A map where keys are week strings and values are fellow initials.
+         */
         function parseCallScheduleCSV(data) {
             const map = {};
             const lines = data.trim().split('\n');
+            // Check if the first line is a header and skip it
             const startIndex = lines[0].toLowerCase().includes('week') ? 1 : 0; 
             for (let i = startIndex; i < lines.length; i++) {
                 const line = lines[i].trim();
-                if (!line) continue;
+                if (!line) continue; // Skip empty lines
                 const parts = line.split(',');
                 if (parts.length === 2) {
                     const weekRange = parts[0].trim();
@@ -703,8 +740,11 @@
         }
 
 
+        /**
+         * Populates the fellow selection dropdown with dynamically discovered fellows.
+         */
         function populateFellowDropdown() {
-            fellowSelect.innerHTML = '<option value="all">Show All Schedules</option>'; 
+            fellowSelect.innerHTML = '<option value="all">Show All Schedules</option>'; // Reset and add default
             ALL_FELLOWS.sort().forEach(fellow => {
                 const option = document.createElement('option');
                 option.value = fellow;
@@ -713,12 +753,17 @@
             });
         }
 
+        /**
+         * Parses a week string (e.g., "MM/DD-MM/DD") into start and end month/day.
+         * @param {string} weekString - The week string.
+         * @returns {Object|null} An object with startMonth, startDay, endMonth, endDay, or null if parsing fails.
+         */
         function getWeekMonthDayRange(weekString) {
             if (!weekString || !weekString.includes('-')) return null;
             const parts = weekString.split('-');
             if (parts.length !== 2) return null;
             const startDateParts = parts[0].split('/');
-            const endDatePartsStr = parts[1].split('/');
+            const endDatePartsStr = parts[1].split('/'); // End date might have year
             if (startDateParts.length < 2 || endDatePartsStr.length < 2) return null;
             const startMonth = parseInt(startDateParts[0], 10);
             const startDay = parseInt(startDateParts[1], 10);
@@ -728,6 +773,13 @@
             return { startMonth, startDay, endMonth, endDay };
         }
 
+        /**
+         * Converts a week string (e.g., "6/30-7/4" or "12/29-1/2/26") into Date objects for start and end.
+         * Handles year transitions correctly.
+         * @param {string} weekString - The week string.
+         * @param {number} currentYearContext - The current year to assume for the start date if not specified.
+         * @returns {{start: Date, end: Date, nextYearContext: number}} Date objects and the year context for the next iteration.
+         */
         function getFullDateObjectsForWeek(weekString, currentYearContext) {
             const [datePart1, datePart2] = weekString.split('-');
             const [startMonthStr, startDayStr] = datePart1.split('/');
@@ -743,16 +795,18 @@
             let nextIterYearContext;
 
             if (endYearShort !== null) {
+                // Year is explicitly provided for the end date
                 eActualYear = 2000 + endYearShort;
-                if (startMonth > endMonth) { 
+                if (startMonth > endMonth) { // e.g. 12/29 - 1/2 (Dec to Jan of next year)
                     sActualYear = eActualYear - 1;
-                } else { 
+                } else { // e.g. 1/5 - 1/9 (Jan to Jan of same year)
                     sActualYear = eActualYear;
                 }
                 nextIterYearContext = eActualYear;
-            } else { 
+            } else {
+                // Year is not provided, infer from context
                 sActualYear = currentYearContext;
-                if (startMonth > endMonth) { 
+                if (startMonth > endMonth) { // e.g. 12/29 - 1/2, implies end month is in the next year
                     eActualYear = currentYearContext + 1;
                 } else {
                     eActualYear = currentYearContext;
@@ -761,51 +815,87 @@
             }
             const startDate = new Date(sActualYear, startMonth - 1, startDay);
             const endDate = new Date(eActualYear, endMonth - 1, endDay);
-            startDate.setHours(0,0,0,0); 
-            endDate.setHours(23,59,59,999);
+            startDate.setHours(0,0,0,0); // Normalize to start of day
+            endDate.setHours(23,59,59,999); // Normalize to end of day
             return { start: startDate, end: endDate, nextYearContext: nextIterYearContext };
         }
 
 
+        /**
+         * Gets the CSS class for highlighting a fellow.
+         * @param {string} fellowInitial - The fellow's initials.
+         * @returns {string} The CSS class name.
+         */
         function getHighlightClass(fellowInitial) { return `highlight-${fellowInitial.toLowerCase()}`; }
 
+        /**
+         * Applies or removes highlight classes from a table cell based on active highlights.
+         * @param {HTMLElement} tdElement - The table cell element.
+         * @param {string} cellFellowInitial - The fellow initial in the cell.
+         */
         function applyCellHighlights(tdElement, cellFellowInitial) {
-            ALL_FELLOWS.forEach(f => tdElement.classList.remove(getHighlightClass(f)));
-            tdElement.classList.remove('highlight-cell-base');
-            if (activeHighlights.has(cellFellowInitial)) {
-                tdElement.classList.add('highlight-cell-base');
-                tdElement.classList.add(getHighlightClass(cellFellowInitial));
+            // Only apply highlights if cellFellowInitial is a recognized single fellow
+            if (ALL_FELLOWS.includes(cellFellowInitial)) {
+                ALL_FELLOWS.forEach(f => tdElement.classList.remove(getHighlightClass(f))); // Clear previous highlights
+                tdElement.classList.remove('highlight-cell-base');
+                if (activeHighlights.has(cellFellowInitial)) {
+                    tdElement.classList.add('highlight-cell-base');
+                    tdElement.classList.add(getHighlightClass(cellFellowInitial));
+                }
+            } else { // For combined entries like ZT&AM, clear any individual highlights
+                 ALL_FELLOWS.forEach(f => tdElement.classList.remove(getHighlightClass(f)));
+                 tdElement.classList.remove('highlight-cell-base');
             }
         }
         
+        /**
+         * Checks if a given month and day fall within a week range (parsed from week string).
+         * @param {number} currentMonth - The current month (1-12).
+         * @param {number} currentDay - The current day.
+         * @param {Object} weekRange - Parsed week range with startMonth, startDay, endMonth, endDay.
+         * @returns {boolean} True if the date is within the range.
+         */
         function isDateInWeekRange(currentMonth, currentDay, weekRange) {
             if (!weekRange) return false;
             const { startMonth, startDay, endMonth, endDay } = weekRange;
+            // Assumes week is within the same year or crosses Dec-Jan
             if (startMonth === endMonth) {
                 return currentMonth === startMonth && currentDay >= startDay && currentDay <= endDay;
-            } else {
+            } else { // Week crosses month boundary
                 return (currentMonth === startMonth && currentDay >= startDay) || 
                        (currentMonth === endMonth && currentDay <= endDay);
             }
         }
 
+        /**
+         * Attempts to scroll an element into view.
+         * @param {HTMLElement} element - The element to scroll to.
+         */
         function attemptScrollToElement(element) {
             if (element) {
-                setTimeout(() => {
+                setTimeout(() => { // Timeout to allow DOM to settle after render
                     element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }, 0);
             }
         }
 
+        /**
+         * Generates HTML for holiday indicators that fall within a given week.
+         * @param {string} weekString - The week string (e.g., "6/30-7/4").
+         * @param {Date} weekFullStartDate - The full start Date object for the week.
+         * @param {Date} weekFullEndDate - The full end Date object for the week.
+         * @returns {string} HTML string of holiday indicators.
+         */
         function getHolidayIndicatorsForWeek(weekString, weekFullStartDate, weekFullEndDate) {
             let indicatorsHtml = "";
-            const processedHolidayKeysInThisCall = new Set(); 
+            const processedHolidayKeysInThisCall = new Set(); // To avoid duplicate holiday entries if logic overlaps
 
+            // Special handling for Christmas 2025 if it's in the "12/22-12-26" week
             if (weekString === "12/22-12-26") {
                 const christmasHoliday2025 = holidays.find(h => h.name === "Christmas" && h.date.getFullYear() === 2025);
                 if (christmasHoliday2025) { 
                     indicatorsHtml += `<span class="holiday-indicator" title="${christmasHoliday2025.name}"><span class="emoji">${christmasHoliday2025.indicator}</span> <span class="date-text">${monthNames[christmasHoliday2025.date.getMonth()]} ${christmasHoliday2025.date.getDate()}</span></span>`;
-                    processedHolidayKeysInThisCall.add(christmasHoliday2025.name + "_2025"); 
+                    processedHolidayKeysInThisCall.add(christmasHoliday2025.name + "_2025"); // Mark as processed
                 }
             }
 
@@ -814,9 +904,10 @@
                 const holidayKey = holiday.name + "_" + holidayYear;
 
                 if (processedHolidayKeysInThisCall.has(holidayKey)) {
-                    return; 
+                    return; // Already handled (e.g. special Christmas case above)
                 }
                 
+                // Prevent double-listing Christmas 2025 if already handled by the special case
                 if (holiday.name === "Christmas" && holidayYear === 2025 && weekString === "12/22-12-26") {
                     return;
                 }
@@ -825,27 +916,31 @@
                 let holidayDateText = "";
                 let displayHoliday = false;
                 
+                // Handle multi-day events like Ramadan or Conferences
                 if (holiday.name === "Ramadan" || holiday.name === "ACG Conference" || holiday.name === "DDW Conference") {
+                    // Show if the start date of the event falls within the current week
                     if (holiday.startDate >= weekFullStartDate && holiday.startDate <= weekFullEndDate) {
                         displayHoliday = true;
                         if (holiday.name === "Ramadan") {
                             holidayDateText = `Starts ${monthNames[holiday.startDate.getMonth()]} ${holiday.startDate.getDate()}`;
-                        } else { 
+                        } else { // For conferences
                             holidayDateText = `${holiday.conferenceName} ${monthNames[holiday.startDate.getMonth()]} ${holiday.startDate.getDate()} - ${monthNames[holiday.endDate.getMonth()]} ${holiday.endDate.getDate()}`;
                         }
                     }
                 } else if (holiday.name === "Easter" && holidayYear === 2026 && weekString === "03/30-04/03") { 
+                    // Specific case for Easter 2026 (April 5th) falling in the week of March 30 - April 3
                      displayHoliday = true;
                      holidayDateText = holiday.displayText || `${monthNames[holiday.date.getMonth()]} ${holiday.date.getDate()}`; 
-                } else if (holiday.startDate && holiday.endDate) { 
+                } else if (holiday.startDate && holiday.endDate) { // Other date range holidays
+                    // Check if the holiday range overlaps with the week range
                     if (holiday.startDate <= weekFullEndDate && holiday.endDate >= weekFullStartDate) {
                         displayHoliday = true;
                         holidayDateText = `${monthNames[holiday.startDate.getMonth()]} ${holiday.startDate.getDate()} - ${monthNames[holiday.endDate.getMonth()]} ${holiday.endDate.getDate()}`;
-                        if (holiday.startDate.getTime() === holiday.endDate.getTime()) { 
+                        if (holiday.startDate.getTime() === holiday.endDate.getTime()) { // If it's a single day range
                              holidayDateText = `${monthNames[holiday.startDate.getMonth()]} ${holiday.startDate.getDate()}`;
                         }
                     }
-                } else { 
+                } else { // Single date holidays
                     if (holiday.date >= weekFullStartDate && holiday.date <= weekFullEndDate) {
                         displayHoliday = true;
                         holidayDateText = `${monthNames[holiday.date.getMonth()]} ${holiday.date.getDate()}`;
@@ -861,31 +956,22 @@
         }
 
 
+        /**
+         * Renders the full schedule table.
+         * @param {Array<Object>} scheduleData - The parsed schedule data.
+         * @param {boolean} shouldScroll - Whether to scroll to the current week.
+         */
         function renderFullSchedule(scheduleData, shouldScroll = true) { 
-            scheduleDisplayContainer.innerHTML = '';
+            scheduleDisplayContainer.innerHTML = ''; // Clear previous content
             noDataMessage.classList.add('hidden');
-            fellowButtonsDetails.classList.remove('hidden'); 
-            exportIcsBtn.classList.add('hidden'); 
+            fellowButtonsDetails.classList.remove('hidden'); // Show highlight buttons
+            exportIcsBtn.classList.add('hidden'); // Hide ICS export for "all" view
 
             let dataToRender = scheduleData;
-            let currentWeekRowElementForScroll = null; 
+            let currentWeekRowElementForScroll = null; // To scroll to this row
 
-            if (hidePreviousWeeks) { 
-                let firstFutureIndex = -1;
-                for(let i=0; i < scheduleData.length; i++) {
-                    if(scheduleData[i].fullEndDate >= ACTUAL_CURRENT_DATE) {
-                        firstFutureIndex = i;
-                        break;
-                    }
-                }
-                if (firstFutureIndex !== -1) {
-                    dataToRender = scheduleData.slice(firstFutureIndex);
-                } else if (scheduleData.length > 0) { 
-                    dataToRender = [scheduleData[scheduleData.length - 1]];
-                } else {
-                    dataToRender = []; 
-                }
-            }
+            // No longer hiding previous weeks, so dataToRender is always the full scheduleData
+            // The current week highlighting logic will find the current week within the full list.
 
             if (!dataToRender || dataToRender.length === 0 || mainScheduleHeaders.length === 0) {
                 scheduleDisplayContainer.innerHTML = '<p class="text-center text-gray-500 p-4">No schedule data to display for the selected view.</p>';
@@ -908,16 +994,12 @@
                 const row = document.createElement('tr');
                 const weekString = weekData['Week'];
                 
-                if (hidePreviousWeeks && index === 0) { 
+                // Highlight current week - this logic finds the current week within the full displayed schedule
+                const monthDayRange = getWeekMonthDayRange(weekString); 
+                if (isDateInWeekRange(CURRENT_SIMULATED_MONTH_DAY.month, CURRENT_SIMULATED_MONTH_DAY.day, monthDayRange)) {
                     row.classList.add('current-week-highlight');
-                    currentWeekRowElementForScroll = row;
-                } else if (!hidePreviousWeeks) { 
-                    const monthDayRange = getWeekMonthDayRange(weekString); 
-                    if (isDateInWeekRange(CURRENT_SIMULATED_MONTH_DAY.month, CURRENT_SIMULATED_MONTH_DAY.day, monthDayRange)) {
-                        row.classList.add('current-week-highlight');
-                        if (!currentWeekRowElementForScroll) { 
-                           currentWeekRowElementForScroll = row;
-                        }
+                    if (!currentWeekRowElementForScroll) { 
+                       currentWeekRowElementForScroll = row;
                     }
                 }
 
@@ -928,26 +1010,42 @@
 
                 mainScheduleHeaders.forEach((header, hIndex) => {
                     const td = document.createElement('td');
-                    const cellContent = weekData[header] || '-';
+                    const cellContent = weekData[header] || '-'; // Default to '-' if empty
                     let cellHtml = cellContent;
 
-                    if (ALL_FELLOWS.includes(cellContent) && cellContent === fellowOnCallThisWeek) {
-                        cellHtml += ` <span class="call-icon-inline">📞</span>`;
+                    // Add call icon if this fellow is on call
+                    const cellFellows = cellContent.split('&');
+                    if (cellFellows.some(cf => ALL_FELLOWS.includes(cf) && cf === fellowOnCallThisWeek)) {
+                         cellHtml += ` <span class="call-icon-inline">📞</span>`;
                     }
                     
-                    specificHolidayCoverage.forEach(coverage => {
-                        if (coverage.fellow === cellContent && 
-                            coverage.date >= weekData.fullStartDate && 
-                            coverage.date <= weekData.fullEndDate) {
-                            cellHtml += ` <span class="asterisk-note">*</span>`;
+                    // Add asterisk for specific holiday coverage
+                    cellFellows.forEach(cf => {
+                        if (ALL_FELLOWS.includes(cf)) { 
+                            specificHolidayCoverage.forEach(coverage => {
+                                if (coverage.fellow === cf && 
+                                    coverage.date >= weekData.fullStartDate && 
+                                    coverage.date <= weekData.fullEndDate) {
+                                    if (!cellHtml.includes(`<span class="asterisk-note">*</span>`)) {
+                                        cellHtml += ` <span class="asterisk-note">*</span>`;
+                                    }
+                                }
+                            });
+                            if (cf === 'MD' && weekString === mdLastAssignmentWeekString) {
+                                 if (!cellHtml.includes(`<span class="asterisk-note">**</span>`)) {
+                                     cellHtml += ` <span class="asterisk-note">**</span>`;
+                                 }
+                            }
+                            if (cf === 'AM' && weekString === amLastAssignmentWeekString) {
+                                 if (!cellHtml.includes(`<span class="asterisk-note">**</span>`)) {
+                                     cellHtml += ` <span class="asterisk-note">**</span>`;
+                                 }
+                            }
                         }
                     });
-                    if (cellContent === 'MD' && weekString === mdLastAssignmentWeekString) {
-                         cellHtml += ` <span class="asterisk-note">**</span>`;
-                    }
                     
-                    if (hIndex === 0) { 
-                        td.innerHTML = `<span class="week-cell-content">${cellContent}</span>`; 
+                    if (hIndex === 0) { // First column (Week)
+                        td.innerHTML = `<span class="week-cell-content">${cellContent}</span>`; // Wrap week string
                         if (holidayIndicatorsHtml) {
                             td.innerHTML += `<div class="holiday-indicators-container">${holidayIndicatorsHtml}</div>`;
                         }
@@ -956,7 +1054,15 @@
                     }
                     
                     if (cellContent === '-') td.classList.add('no-assignment');
-                    if (ALL_FELLOWS.includes(cellContent)) applyCellHighlights(td, cellContent);
+                    cellFellows.forEach(cf => {
+                        if (ALL_FELLOWS.includes(cf)) {
+                             applyCellHighlights(td, cf); 
+                        }
+                    });
+                    if (cellFellows.length > 1 && activeHighlights.size > 0) {
+                        if (cellFellows.some(cf => activeHighlights.has(cf))) {
+                        }
+                    }
                     row.appendChild(td);
                 });
                 tbody.appendChild(row);
@@ -970,14 +1076,17 @@
 
             if (shouldScroll && currentWeekRowElementForScroll) { 
                 attemptScrollToElement(currentWeekRowElementForScroll);
-            } else if (shouldScroll && hidePreviousWeeks && dataToRender.length > 0) {
-                const firstRowInTable = scheduleDisplayContainer.querySelector('tbody tr:first-child');
-                if (firstRowInTable) attemptScrollToElement(firstRowInTable);
             }
         }
         
         let currentFellowAssignmentsForICS = []; 
 
+        /**
+         * Renders the schedule for a single selected fellow.
+         * @param {string} fellowInitial - The initials of the selected fellow.
+         * @param {Array<Object>} scheduleData - The full parsed schedule data.
+         * @param {boolean} shouldScroll - Whether to scroll to the current week.
+         */
         function renderFellowSchedule(fellowInitial, scheduleData, shouldScroll = true) { 
             scheduleDisplayContainer.innerHTML = '';
             noDataMessage.classList.add('hidden');
@@ -987,13 +1096,14 @@
             currentFellowAssignmentsForICS = []; 
             const allFellowAssignmentsThisFellow = [];
             
-            parsedMainSchedule.forEach(weekData => { 
-                 if (mainScheduleHeaders.length > 1) {
-                    mainScheduleHeaders.slice(1).forEach(rotation => {
-                        if (weekData[rotation] === fellowInitial) {
+             parsedMainSchedule.forEach(weekData => { 
+                 if (mainScheduleHeaders.length > 1) { 
+                    mainScheduleHeaders.slice(1).forEach(rotationHeader => { 
+                        if (weekData[rotationHeader] && weekData[rotationHeader].includes(fellowInitial)) {
                             allFellowAssignmentsThisFellow.push({ 
                                 week: weekData.Week, 
-                                rotation: rotation,
+                                rotation: rotationHeader, 
+                                displayRotation: weekData[rotationHeader], 
                                 fullStartDate: weekData.fullStartDate, 
                                 fullEndDate: weekData.fullEndDate 
                             });
@@ -1004,12 +1114,8 @@
             currentFellowAssignmentsForICS = allFellowAssignmentsThisFellow; 
 
             let assignmentsToDisplay = allFellowAssignmentsThisFellow;
-            if (hidePreviousWeeks) { 
-                assignmentsToDisplay = allFellowAssignmentsThisFellow.filter(assignment => assignment.fullEndDate >= ACTUAL_CURRENT_DATE);
-                 if (assignmentsToDisplay.length === 0 && allFellowAssignmentsThisFellow.length > 0) {
-                    assignmentsToDisplay = [allFellowAssignmentsThisFellow[allFellowAssignmentsThisFellow.length - 1]];
-                }
-            }
+            // No longer hiding previous weeks, so assignmentsToDisplay is all assignments for the fellow.
+            // The current week highlighting will find the current week within this full list.
 
 
             if (assignmentsToDisplay.length === 0) {
@@ -1042,16 +1148,12 @@
                 const row = document.createElement('tr');
                 const weekString = assignment.week;
                 
-                if (hidePreviousWeeks && index === 0) { 
+                // Highlight current assignment
+                const monthDayRange = getWeekMonthDayRange(weekString);
+                if (isDateInWeekRange(CURRENT_SIMULATED_MONTH_DAY.month, CURRENT_SIMULATED_MONTH_DAY.day, monthDayRange)) {
                     row.classList.add('current-week-highlight');
-                    currentWeekRowElementForHighlight = row;
-                } else if (!hidePreviousWeeks) { 
-                    const monthDayRange = getWeekMonthDayRange(weekString);
-                    if (isDateInWeekRange(CURRENT_SIMULATED_MONTH_DAY.month, CURRENT_SIMULATED_MONTH_DAY.day, monthDayRange)) {
-                        row.classList.add('current-week-highlight');
-                        if (!currentWeekRowElementForHighlight) {
-                           currentWeekRowElementForHighlight = row;
-                        }
+                    if (!currentWeekRowElementForHighlight) {
+                        currentWeekRowElementForHighlight = row;
                     }
                 }
                 
@@ -1065,7 +1167,8 @@
                 weekCell.style.position = 'sticky'; weekCell.style.left = '0'; weekCell.style.zIndex = '5';
                 row.appendChild(weekCell);
 
-                let rotationCellContent = assignment.rotation;
+                let rotationCellContent = assignment.rotation; 
+                
                 const fellowOnCallThisWeek = callScheduleMap[weekString];
                 if (fellowInitial === fellowOnCallThisWeek) {
                     rotationCellContent += ` <span class="call-icon-inline">📞</span>`;
@@ -1074,6 +1177,7 @@
                 let hasSpecificHolidayCoverage = false;
                 specificHolidayCoverage.forEach(coverage => {
                     if (coverage.fellow === fellowInitial && 
+                        assignment.displayRotation.includes(fellowInitial) && 
                         coverage.date >= assignment.fullStartDate && 
                         coverage.date <= assignment.fullEndDate) {
                         hasSpecificHolidayCoverage = true;
@@ -1082,7 +1186,11 @@
                 if (hasSpecificHolidayCoverage) {
                     rotationCellContent += ` <span class="asterisk-note">*</span>`;
                 }
-                if (fellowInitial === 'MD' && weekString === mdLastAssignmentWeekString) {
+
+                if (fellowInitial === 'MD' && weekString === mdLastAssignmentWeekString && assignment.displayRotation.includes('MD')) {
+                     rotationCellContent += ` <span class="asterisk-note">**</span>`;
+                }
+                if (fellowInitial === 'AM' && weekString === amLastAssignmentWeekString && assignment.displayRotation.includes('AM')) { 
                      rotationCellContent += ` <span class="asterisk-note">**</span>`;
                 }
 
@@ -1101,12 +1209,15 @@
 
             if (shouldScroll && currentWeekRowElementForHighlight) {
                  attemptScrollToElement(currentWeekRowElementForHighlight);
-            } else if (shouldScroll && hidePreviousWeeks && assignmentsToDisplay.length > 0) {
-                 const firstRowInTable = scheduleDisplayContainer.querySelector('tbody tr:first-child');
-                if (firstRowInTable) attemptScrollToElement(firstRowInTable);
             }
         }
 
+        /**
+         * Generates iCalendar (.ics) content for a fellow's schedule.
+         * @param {string} fellowInitial - The fellow's initials.
+         * @param {Array<Object>} assignments - Array of assignment objects for the fellow.
+         * @returns {string} The ICS data as a string.
+         */
         function generateICSContent(fellowInitial, assignments) {
             let icsContent = [
                 'BEGIN:VCALENDAR',
@@ -1123,7 +1234,7 @@
 
             assignments.forEach((assignment, index) => {
                 const uid = `fellowschedule-${fellowInitial}-${assignment.fullStartDate.getTime()}-${index}@example.com`; 
-                const dtstamp = new Date().toISOString().replace(/[-:.]/g, '').slice(0, 15) + 'Z';
+                const dtstamp = new Date().toISOString().replace(/[-:.]/g, '').slice(0, 15) + 'Z'; 
                 
                 const summary = `${assignment.rotation} (${fellowNames[fellowInitial] || fellowInitial})`;
                 
@@ -1140,9 +1251,14 @@
             });
 
             icsContent.push('END:VCALENDAR');
-            return icsContent.join('\r\n');
+            return icsContent.join('\r\n'); 
         }
 
+        /**
+         * Triggers a download of a file with the given filename and content.
+         * @param {string} filename - The desired filename.
+         * @param {string} content - The content of the file.
+         */
         function downloadICSFile(filename, content) {
             const blob = new Blob([content], { type: 'text/calendar;charset=utf-8;' });
             const link = document.createElement("a");
@@ -1158,6 +1274,7 @@
             }
         }
 
+        // Event listener for ICS export button
         exportIcsBtn.addEventListener('click', () => {
             const selectedFellowInitial = fellowSelect.value;
             if (selectedFellowInitial && selectedFellowInitial !== 'all' && currentFellowAssignmentsForICS.length > 0) {
@@ -1194,6 +1311,11 @@
         });
 
 
+        /**
+         * Toggles the highlight state for a fellow and re-renders the schedule.
+         * @param {string} fellowInitial - The initials of the fellow.
+         * @param {HTMLElement} buttonElement - The button element that was clicked.
+         */
         function toggleFellowHighlight(fellowInitial, buttonElement) {
             if (activeHighlights.has(fellowInitial)) activeHighlights.delete(fellowInitial);
             else activeHighlights.add(fellowInitial);
@@ -1201,12 +1323,18 @@
             if (fellowSelect.value === 'all') renderFullSchedule(parsedMainSchedule, false); 
         }
 
+        /**
+         * Clears all active fellow highlights and re-renders the schedule.
+         */
         function clearAllHighlights() {
             activeHighlights.clear();
             document.querySelectorAll('.fellow-btn.active').forEach(btn => btn.classList.remove('active'));
             if (fellowSelect.value === 'all') renderFullSchedule(parsedMainSchedule, false); 
         }
 
+        /**
+         * Populates the fellow highlight buttons.
+         */
         function populateFellowButtons() {
             fellowButtonsContainer.innerHTML = ''; 
             ALL_FELLOWS.forEach(fellow => {
@@ -1226,18 +1354,8 @@
             fellowButtonsContainer.appendChild(clearButton);
         }
         
-        hidePreviousWeeksToggle.addEventListener('change', (event) => { 
-            hidePreviousWeeks = event.target.checked; 
-            const selectedFellow = fellowSelect.value;
-            const shouldScroll = hidePreviousWeeks; 
-
-            if (selectedFellow === 'all') {
-                renderFullSchedule(parsedMainSchedule, shouldScroll);
-            } else {
-                renderFellowSchedule(selectedFellow, parsedMainSchedule, shouldScroll);
-            }
-        });
         
+        // Event listener for zoom slider
         zoomSlider.addEventListener('input', (event) => { 
             currentZoomLevel = parseFloat(event.target.value);
             scheduleDisplayContainer.style.transform = `scale(${currentZoomLevel})`;
@@ -1248,21 +1366,27 @@
         });
 
 
+        // Event listener for fellow selection dropdown
         fellowSelect.addEventListener('change', (event) => {
             const selectedFellow = event.target.value;
+            noDataMessage.classList.add('hidden'); // Ensure noDataMessage is hidden before rendering
             if (selectedFellow === 'all') {
                 exportIcsBtn.classList.add('hidden');
                 fellowButtonsDetails.classList.remove('hidden'); 
-                if (fellowButtonsDetails) fellowButtonsDetails.open = !(window.innerWidth < 768);
+                if (fellowButtonsDetails) fellowButtonsDetails.open = !(window.innerWidth < 768); 
 
                 scheduleDisplayContainer.classList.remove('hidden');
-                renderFullSchedule(parsedMainSchedule, hidePreviousWeeks); 
+                renderFullSchedule(parsedMainSchedule, true); // Scroll to current week when switching to all
             } else {
-                fellowButtonsDetails.classList.add('hidden');
-                renderFellowSchedule(selectedFellow, parsedMainSchedule, hidePreviousWeeks);
+                fellowButtonsDetails.classList.add('hidden'); 
+                scheduleDisplayContainer.classList.remove('hidden'); // Ensure table container is visible
+                renderFellowSchedule(selectedFellow, parsedMainSchedule, true); // Scroll to current week for individual
             }
         });
 
+        /**
+         * Initializes the application: parses data, populates UI elements, and renders the initial schedule.
+         */
         function initializeApp() {
             if (window.innerWidth < 768) { 
                 currentZoomLevel = 0.5; 
@@ -1270,9 +1394,8 @@
                 currentZoomLevel = 1.0; 
             }
 
-            hidePreviousWeeksToggle.checked = hidePreviousWeeks; 
             zoomSlider.min = "0.3"; 
-            zoomSlider.max = "1.0";
+            zoomSlider.max = "1.0"; 
             zoomSlider.value = currentZoomLevel; 
             zoomValueDisplay.textContent = `${Math.round(currentZoomLevel * 100)}%`;
             
@@ -1285,7 +1408,7 @@
             callScheduleMap = parseCallScheduleCSV(callScheduleCsvData); 
             populateFellowDropdown(); 
             populateFellowButtons();  
-            renderFullSchedule(parsedMainSchedule, hidePreviousWeeks); 
+            renderFullSchedule(parsedMainSchedule, true); // Initial render, scroll to current week
 
             if (fellowButtonsDetails) {
                  fellowButtonsDetails.open = !(window.innerWidth < 768 && fellowSelect.value === 'all');
