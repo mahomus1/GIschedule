@@ -17,6 +17,26 @@
             font-family: 'Inter', sans-serif;
             background-color: var(--mizzou-gray);
         }
+        .mizzou-header {
+            background-color: var(--mizzou-black);
+            color: var(--mizzou-gold);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .mizzou-header h1,
+        .mizzou-header p {
+            color: var(--mizzou-gold);
+        }
+        .mizzou-footer {
+            background-color: var(--mizzou-black);
+            color: var(--mizzou-gold);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 2rem;
+            text-align: center;
+        }
         .table-wrapper { /* Added to allow horizontal scroll on smaller screens if table is too wide */
             width: 100%;
             overflow: auto; /* Changed from overflow-x-auto to auto for general overflow */
@@ -301,11 +321,12 @@
         }
     </style>
 </head>
-<body class="p-2 sm:p-4 md:p-8"> <div class="container mx-auto">
-        <header class="flex flex-col items-center mb-6">
+<body class="p-2 sm:p-4 md:p-8">
+    <div class="container mx-auto">
+        <header class="mizzou-header flex flex-col items-center">
             <img src="https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/svg/E313.svg" alt="GI Logo" class="w-24 h-24 mb-2">
-            <h1 class="text-3xl sm:text-4xl font-bold text-center text-black">Fellows Schedule</h1>
-            <p class="text-center text-gray-700">Mizzou Division of Gastroenterology &amp; Hepatology</p>
+            <h1 class="text-3xl sm:text-4xl font-bold">Fellows Schedule</h1>
+            <p>Mizzou Division of Gastroenterology &amp; Hepatology</p>
         </header>
 
         <div class="controls-wrapper"> <div class="controls">
@@ -356,6 +377,9 @@
         <div id="no-data-message" class="hidden text-center text-gray-500 mt-6 sm:mt-8 text-lg sm:text-xl">
             No schedule data found for the selected fellow.
         </div>
+        <footer class="mizzou-footer">
+            <p>&copy; 2025 University of Missouri Gastroenterology Division</p>
+        </footer>
         </div>
 
     <script>
