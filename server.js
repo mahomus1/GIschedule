@@ -36,13 +36,25 @@ app.post('/upload/:type', upload.single('file'), (req, res) => {
   try {
     execSync(`git add ${targetFile}`, { cwd: REPO_DIR });
     execSync(`git commit -m "Update ${targetFile} via upload"`, { cwd: REPO_DIR });
-    execSync('git push', { cwd: REPO_DIR });
+
+    let remote = '';
+    try {
+      remote = execSync('git remote', { cwd: REPO_DIR, encoding: 'utf8' }).trim();
+    } catch (remoteErr) {
+      console.warn('Could not check git remote:', remoteErr.message);
+    }
+
+    if (remote) {
+      execSync('git push', { cwd: REPO_DIR });
+    } else {
+      console.warn('No git remote configured. Skipping push.');
+    }
   } catch (err) {
     console.error(err);
     return res.status(500).send('Error updating repository.');
   }
 
-  res.send('File uploaded and repository updated.');
+  res.send('File uploaded. Repository updated.');
 });
 
 const PORT = process.env.PORT || 3000;
