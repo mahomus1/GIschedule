@@ -13,6 +13,11 @@ app.use(express.static(REPO_DIR));
 
 app.post('/upload/:type', upload.single('file'), (req, res) => {
   const { type } = req.params;
+  const { password } = req.body;
+  if (password !== 'mizzou') {
+    if (req.file) fs.unlinkSync(req.file.path);
+    return res.status(403).send('Invalid password.');
+  }
   if (!req.file) {
     return res.status(400).send('No file uploaded.');
   }

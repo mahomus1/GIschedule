@@ -379,7 +379,8 @@
                         </div>
                 </details>
 
-                <div class="mt-4 space-y-2">
+                <button id="admin-toggle" class="action-btn mt-4">Admin</button>
+                <div id="upload-section" class="mt-4 space-y-2 hidden">
                     <div>
                         <input type="file" id="main-upload" accept=".csv" class="mb-1">
                         <button class="action-btn" onclick="uploadFile('main')">Upload Main Schedule</button>
@@ -408,6 +409,7 @@
     <script>
         let mainScheduleCsvData = '';
         let callScheduleCsvData = '';
+        let adminPassword = '';
 
         async function loadCsvData() {
             const [mainResp, callResp] = await Promise.all([
@@ -426,6 +428,9 @@
             }
             const formData = new FormData();
             formData.append('file', input.files[0]);
+            if (adminPassword) {
+                formData.append('password', adminPassword);
+            }
 
             const resp = await fetch(`/upload/${type}`, {
                 method: 'POST',
@@ -544,6 +549,8 @@
         const fellowButtonsDetails = document.getElementById('fellow-buttons-details');
         const legendToggleBtn = document.getElementById('legend-toggle-btn');
         const legendPopover = document.getElementById('legend-popover');
+        const adminToggleBtn = document.getElementById('admin-toggle');
+        const uploadSection = document.getElementById('upload-section');
 
         // Base sizing parameters for responsive zoom
         let BASE_FONT_SIZE_TD_REM;
@@ -1395,6 +1402,17 @@
             }
         });
 
+        function handleAdminToggle() {
+            const pw = prompt('Enter admin password:');
+            if (pw === 'mizzou') {
+                adminPassword = pw;
+                if (uploadSection) uploadSection.classList.remove('hidden');
+                if (adminToggleBtn) adminToggleBtn.classList.add('hidden');
+            } else {
+                alert('Incorrect password.');
+            }
+        }
+
         /**
          * Initializes the application: parses data, populates UI elements, and renders the initial schedule.
          */
@@ -1420,13 +1438,17 @@
             setBaseSizingParameters();
             parsedMainSchedule = parseMainScheduleCSV(mainScheduleCsvData);
             callScheduleMap = parseCallScheduleCSV(callScheduleCsvData);
-            populateFellowDropdown(); 
-            populateFellowButtons();  
+            populateFellowDropdown();
+            populateFellowButtons();
             renderFullSchedule(parsedMainSchedule, true); // Initial render, scroll to current week
 
             if (fellowButtonsDetails) {
                  fellowButtonsDetails.open = !(window.innerWidth < 768 && fellowSelect.value === 'all');
                  if(fellowSelect.value !== 'all') fellowButtonsDetails.classList.add('hidden');
+            }
+
+            if (adminToggleBtn) {
+                adminToggleBtn.addEventListener('click', handleAdminToggle);
             }
 
             legendToggleBtn.addEventListener('click', (event) => {
