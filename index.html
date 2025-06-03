@@ -598,6 +598,7 @@
         let BASE_PADDING_TD_Y_REM;
         let BASE_PADDING_TD_X_REM;
         let BASE_MIN_WIDTH_FIRST_COL_PX;
+        let BASE_TABLE_MIN_WIDTH_PX;
         let BASE_FONT_SIZE_HOLIDAY_CONTAINER_REM;
         let BASE_FONT_SIZE_CALL_ICON_EM;
 
@@ -612,6 +613,7 @@
                 BASE_PADDING_TD_Y_REM = 0.2;
                 BASE_PADDING_TD_X_REM = 0.3;
                 BASE_MIN_WIDTH_FIRST_COL_PX = 70; // Slightly smaller min-width for first column
+                BASE_TABLE_MIN_WIDTH_PX = 800; // Smaller minimum width on mobile
                 BASE_FONT_SIZE_HOLIDAY_CONTAINER_REM = 0.55;
                 BASE_FONT_SIZE_CALL_ICON_EM = 0.65;
             } else { // Desktop or larger tablets
@@ -619,6 +621,7 @@
                 BASE_PADDING_TD_Y_REM = 0.5;
                 BASE_PADDING_TD_X_REM = 0.75;
                 BASE_MIN_WIDTH_FIRST_COL_PX = 80; // Default min-width for first column
+                BASE_TABLE_MIN_WIDTH_PX = 1000; // Default minimum table width on desktop
                 BASE_FONT_SIZE_HOLIDAY_CONTAINER_REM = 0.6;
                 BASE_FONT_SIZE_CALL_ICON_EM = 0.7;
             }
@@ -631,6 +634,8 @@
         function applyZoomStyles(zoomFactor) {
             const table = scheduleDisplayContainer.querySelector('table');
             if (!table) return;
+
+            table.style.minWidth = `${BASE_TABLE_MIN_WIDTH_PX * zoomFactor}px`;
 
             const allTh = table.querySelectorAll('th');
             const allTd = table.querySelectorAll('td');
