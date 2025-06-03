@@ -327,6 +327,10 @@
             .fellow-buttons-details, .legend-button-wrapper { margin-top: 0.5rem; }
             .fellow-buttons-details summary { padding: 0.25rem 0.5rem; font-size: 0.75rem; }
         }
+        #admin-toggle {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+        }
         .hidden {
             display: none !important;
         }
@@ -379,7 +383,6 @@
                         </div>
                 </details>
 
-                <button id="admin-toggle" class="action-btn mt-4">Admin</button>
                 <div id="upload-section" class="mt-4 space-y-2 hidden">
                     <div>
                         <input type="file" id="main-upload" accept=".csv" class="mb-1">
@@ -402,6 +405,7 @@
             No schedule data found for the selected fellow.
         </div>
         <footer class="mizzou-footer">
+            <button id="admin-toggle" class="action-btn">Admin</button>
             <p>&copy; 2025 University of Missouri Gastroenterology Division</p>
         </footer>
         </div>
