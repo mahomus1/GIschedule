@@ -549,7 +549,14 @@
             const table = scheduleDisplayContainer.querySelector('table');
             if (!table) return;
 
-            table.style.minWidth = `${BASE_TABLE_MIN_WIDTH_PX * zoomFactor}px`;
+            const isIndividual = table.querySelectorAll('thead th').length <= 2;
+            if (isIndividual) {
+                table.style.width = 'auto';
+                table.style.minWidth = '0';
+            } else {
+                table.style.width = '100%';
+                table.style.minWidth = `${BASE_TABLE_MIN_WIDTH_PX * zoomFactor}px`;
+            }
 
             const allTh = table.querySelectorAll('th');
             const allTd = table.querySelectorAll('td');
@@ -1083,14 +1090,16 @@
             table.style.minWidth = '100%'; 
             const thead = document.createElement('thead');
             const tbody = document.createElement('tbody');
-            const individualHeaders = ['Week', 'Rotation/Activity']; 
+            const individualHeaders = ['Week', 'Rotation/Activity'];
             const headerRow = document.createElement('tr');
             individualHeaders.forEach(headerText => {
                 const th = document.createElement('th');
                 th.textContent = headerText;
-                if (headerText === 'Week') { 
+                if (headerText === 'Week') {
                     th.style.position = 'sticky'; th.style.left = '0';
                     th.style.zIndex = '12'; th.style.backgroundColor = '#000000';
+                } else if (headerText === 'Rotation/Activity') {
+                    th.style.textAlign = 'center';
                 }
                 headerRow.appendChild(th);
             });
@@ -1151,6 +1160,7 @@
 
                 const rotationCell = document.createElement('td');
                 rotationCell.innerHTML = rotationCellContent;
+                rotationCell.style.textAlign = 'center';
                 row.appendChild(rotationCell);
                 tbody.appendChild(row);
             });
