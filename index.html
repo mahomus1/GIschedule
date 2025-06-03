@@ -378,6 +378,18 @@
                     <div id="fellow-buttons-container" class="fellow-buttons-container">
                         </div>
                 </details>
+
+                <div class="mt-4 space-y-2">
+                    <div>
+                        <input type="file" id="main-upload" accept=".csv" class="mb-1">
+                        <button class="action-btn" onclick="uploadFile('main')">Upload Main Schedule</button>
+                    </div>
+                    <div>
+                        <input type="file" id="call-upload" accept=".csv" class="mb-1">
+                        <button class="action-btn" onclick="uploadFile('call')">Upload Call Schedule</button>
+                    </div>
+                </div>
+
                 </div>
         </div>
 
@@ -404,6 +416,31 @@
             ]);
             mainScheduleCsvData = await mainResp.text();
             callScheduleCsvData = await callResp.text();
+        }
+
+        async function uploadFile(type) {
+            const input = document.getElementById(`${type}-upload`);
+            if (!input || !input.files.length) {
+                alert('Please choose a file first.');
+                return;
+            }
+            const formData = new FormData();
+            formData.append('file', input.files[0]);
+
+            const resp = await fetch(`/upload/${type}`, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (resp.ok) {
+                alert('Upload successful.');
+                await loadCsvData();
+                parsedMainSchedule = parseMainScheduleCSV(mainScheduleCsvData);
+                callScheduleMap = parseCallScheduleCSV(callScheduleCsvData);
+                renderFullSchedule(parsedMainSchedule, true);
+            } else {
+                alert('Upload failed');
+            }
         }
 
         // Fellow initials and names (can be expanded)
