@@ -489,8 +489,9 @@
         let parsedMainSchedule = []; 
         let mainScheduleHeaders = [];
         let callScheduleMap = {}; 
-        let activeHighlights = new Set(); 
-        let currentZoomLevel; 
+        let activeHighlights = new Set();
+        let currentZoomLevel;
+        let lastAllZoomLevel = 1.0;
         let mdLastAssignmentWeekString = null; // Stores the week string for MD's last assignment
         let amLastAssignmentWeekString = null; // Stores the week string for AM's last assignment
 
@@ -499,8 +500,9 @@
         const scheduleDisplayContainer = document.getElementById('schedule-display');
         const noDataMessage = document.getElementById('no-data-message');
         const fellowButtonsContainer = document.getElementById('fellow-buttons-container');
-        const zoomSlider = document.getElementById('zoom-slider'); 
+        const zoomSlider = document.getElementById('zoom-slider');
         const zoomValueDisplay = document.getElementById('zoom-value');
+        const zoomSliderContainer = document.getElementById('zoom-slider-container');
         const exportIcsBtn = document.getElementById('export-ics-btn');
         const fellowButtonsDetails = document.getElementById('fellow-buttons-details');
         const legendToggleBtn = document.getElementById('legend-toggle-btn');
@@ -549,7 +551,14 @@
             const table = scheduleDisplayContainer.querySelector('table');
             if (!table) return;
 
-            table.style.minWidth = `${BASE_TABLE_MIN_WIDTH_PX * zoomFactor}px`;
+            const isIndividual = table.querySelectorAll('thead th').length <= 2;
+            if (isIndividual) {
+                table.style.width = 'auto';
+                table.style.minWidth = '0';
+            } else {
+                table.style.width = '100%';
+                table.style.minWidth = `${BASE_TABLE_MIN_WIDTH_PX * zoomFactor}px`;
+            }
 
             const allTh = table.querySelectorAll('th');
             const allTd = table.querySelectorAll('td');
@@ -1083,14 +1092,16 @@
             table.style.minWidth = '100%'; 
             const thead = document.createElement('thead');
             const tbody = document.createElement('tbody');
-            const individualHeaders = ['Week', 'Rotation/Activity']; 
+            const individualHeaders = ['Week', 'Rotation/Activity'];
             const headerRow = document.createElement('tr');
             individualHeaders.forEach(headerText => {
                 const th = document.createElement('th');
                 th.textContent = headerText;
-                if (headerText === 'Week') { 
+                if (headerText === 'Week') {
                     th.style.position = 'sticky'; th.style.left = '0';
                     th.style.zIndex = '12'; th.style.backgroundColor = '#000000';
+                } else if (headerText === 'Rotation/Activity') {
+                    th.style.textAlign = 'center';
                 }
                 headerRow.appendChild(th);
             });
@@ -1151,6 +1162,7 @@
 
                 const rotationCell = document.createElement('td');
                 rotationCell.innerHTML = rotationCellContent;
+                rotationCell.style.textAlign = 'center';
                 row.appendChild(rotationCell);
                 tbody.appendChild(row);
             });
@@ -1322,13 +1334,25 @@
             noDataMessage.classList.add('hidden'); // Ensure noDataMessage is hidden before rendering
             if (selectedFellow === 'all') {
                 exportIcsBtn.classList.add('hidden');
-                fellowButtonsDetails.classList.remove('hidden'); 
-                if (fellowButtonsDetails) fellowButtonsDetails.open = !(window.innerWidth < 768); 
+                fellowButtonsDetails.classList.remove('hidden');
+                if (fellowButtonsDetails) fellowButtonsDetails.open = !(window.innerWidth < 768);
+
+                zoomSliderContainer.classList.remove('hidden');
+                currentZoomLevel = lastAllZoomLevel;
+                zoomSlider.value = currentZoomLevel;
+                zoomValueDisplay.textContent = `${Math.round(currentZoomLevel * 100)}%`;
 
                 scheduleDisplayContainer.classList.remove('hidden');
                 renderFullSchedule(parsedMainSchedule, true); // Scroll to current week when switching to all
             } else {
-                fellowButtonsDetails.classList.add('hidden'); 
+                fellowButtonsDetails.classList.add('hidden');
+
+                lastAllZoomLevel = currentZoomLevel;
+                currentZoomLevel = 1.0;
+                zoomSlider.value = currentZoomLevel;
+                zoomValueDisplay.textContent = `${Math.round(currentZoomLevel * 100)}%`;
+                zoomSliderContainer.classList.add('hidden');
+
                 scheduleDisplayContainer.classList.remove('hidden'); // Ensure table container is visible
                 renderFellowSchedule(selectedFellow, parsedMainSchedule, true); // Scroll to current week for individual
             }
@@ -1343,11 +1367,13 @@
             } else {
                 currentZoomLevel = 1.0;
             }
+            lastAllZoomLevel = currentZoomLevel;
 
             zoomSlider.min = "0.3"; 
             zoomSlider.max = "1.0"; 
             zoomSlider.value = currentZoomLevel; 
             zoomValueDisplay.textContent = `${Math.round(currentZoomLevel * 100)}%`;
+            zoomSliderContainer.classList.remove('hidden');
             
 
             applyZoomStyles(currentZoomLevel);
