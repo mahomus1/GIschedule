@@ -549,7 +549,14 @@
             const table = scheduleDisplayContainer.querySelector('table');
             if (!table) return;
 
-            table.style.minWidth = `${BASE_TABLE_MIN_WIDTH_PX * zoomFactor}px`;
+            const isIndividual = table.querySelectorAll('thead th').length <= 2;
+            if (isIndividual) {
+                table.style.width = 'auto';
+                table.style.minWidth = '0';
+            } else {
+                table.style.width = '100%';
+                table.style.minWidth = `${BASE_TABLE_MIN_WIDTH_PX * zoomFactor}px`;
+            }
 
             const allTh = table.querySelectorAll('th');
             const allTd = table.querySelectorAll('td');
