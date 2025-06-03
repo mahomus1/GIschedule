@@ -1106,9 +1106,7 @@
             table.appendChild(tbody);
             scheduleDisplayContainer.appendChild(table);
             
-            scheduleDisplayContainer.style.transform = `scale(${currentZoomLevel})`;
-            scheduleDisplayContainer.style.width = `${100 / currentZoomLevel}%`;
-            scheduleDisplayContainer.style.maxHeight = `${70 / currentZoomLevel}vh`;
+            applyZoomStyles(currentZoomLevel);
 
             if (shouldScroll && currentWeekRowElementForScroll) { 
                 attemptScrollToElement(currentWeekRowElementForScroll);
@@ -1239,9 +1237,8 @@
             table.appendChild(tbody);
             scheduleDisplayContainer.appendChild(table);
             
-            scheduleDisplayContainer.style.transform = `scale(${currentZoomLevel})`;
-            scheduleDisplayContainer.style.width = `${100 / currentZoomLevel}%`;
-            scheduleDisplayContainer.style.maxHeight = `${70 / currentZoomLevel}vh`;
+
+            applyZoomStyles(currentZoomLevel);
 
             if (shouldScroll && currentWeekRowElementForHighlight) {
                  attemptScrollToElement(currentWeekRowElementForHighlight);
@@ -1392,12 +1389,9 @@
         
         
         // Event listener for zoom slider
-        zoomSlider.addEventListener('input', (event) => { 
+        zoomSlider.addEventListener('input', (event) => {
             currentZoomLevel = parseFloat(event.target.value);
-            scheduleDisplayContainer.style.transform = `scale(${currentZoomLevel})`;
-            scheduleDisplayContainer.style.width = `${100 / currentZoomLevel}%`;
-            scheduleDisplayContainer.style.maxHeight = `${70 / currentZoomLevel}vh`; 
-
+            applyZoomStyles(currentZoomLevel);
             zoomValueDisplay.textContent = `${Math.round(currentZoomLevel * 100)}%`;
         });
 
@@ -1435,9 +1429,8 @@
             zoomSlider.value = currentZoomLevel; 
             zoomValueDisplay.textContent = `${Math.round(currentZoomLevel * 100)}%`;
             
-            scheduleDisplayContainer.style.transform = `scale(${currentZoomLevel})`;
-            scheduleDisplayContainer.style.width = `${100 / currentZoomLevel}%`;
-            scheduleDisplayContainer.style.maxHeight = `${70 / currentZoomLevel}vh`;
+
+            applyZoomStyles(currentZoomLevel);
 
             setBaseSizingParameters(); 
             parsedMainSchedule = parseMainScheduleCSV(mainScheduleCsvData); 
