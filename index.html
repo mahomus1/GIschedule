@@ -392,6 +392,14 @@
                         <input type="file" id="call-upload" accept=".csv" class="mb-1">
                         <button class="action-btn" onclick="uploadFile('call')">Upload Call Schedule</button>
                     </div>
+                    <div id="upload-instructions" class="bg-yellow-50 border border-yellow-200 rounded p-2 text-sm hidden">
+                        <p><strong>Required CSV files:</strong></p>
+                        <ul class="list-disc ml-4">
+                            <li><code>main_schedule.csv</code> – must include a header row starting with <code>Week</code> followed by service columns.</li>
+                            <li><code>call_schedule.csv</code> – contains <code>Week</code> and <code>Call</code> columns.</li>
+                        </ul>
+                        <p class="mt-1">Ensure the filenames match exactly and retain the header row for proper parsing.</p>
+                    </div>
                 </div>
 
                 </div>
@@ -555,6 +563,7 @@
         const legendPopover = document.getElementById('legend-popover');
         const adminToggleBtn = document.getElementById('admin-toggle');
         const uploadSection = document.getElementById('upload-section');
+        const uploadInstructions = document.getElementById('upload-instructions');
 
         // Base sizing parameters for responsive zoom
         let BASE_FONT_SIZE_TD_REM;
@@ -1411,6 +1420,7 @@
             if (pw === 'mizzou') {
                 adminPassword = pw;
                 if (uploadSection) uploadSection.classList.remove('hidden');
+                if (uploadInstructions) uploadInstructions.classList.remove('hidden');
                 if (adminToggleBtn) adminToggleBtn.classList.add('hidden');
             } else {
                 alert('Incorrect password.');
