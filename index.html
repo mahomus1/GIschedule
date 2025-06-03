@@ -503,6 +503,7 @@
         let BASE_TABLE_MIN_WIDTH_PX;
         let BASE_FONT_SIZE_HOLIDAY_CONTAINER_REM;
         let BASE_FONT_SIZE_CALL_ICON_EM;
+        const MIN_CALL_ICON_FONT_SIZE_EM = 0.6; // Prevent call icon from becoming unreadable when zoomed out
 
         /**
          * Sets base sizing parameters based on viewport width.
@@ -569,7 +570,8 @@
             // Apply styles to call icons
             const callIcons = table.querySelectorAll('.call-icon-inline');
             callIcons.forEach(ci => {
-                ci.style.fontSize = `${BASE_FONT_SIZE_CALL_ICON_EM * zoomFactor}em`; // Zoom relative to parent font size
+                const computedSize = BASE_FONT_SIZE_CALL_ICON_EM * zoomFactor;
+                ci.style.fontSize = `${Math.max(computedSize, MIN_CALL_ICON_FONT_SIZE_EM)}em`; // Ensure icon remains legible
             });
         }
 
