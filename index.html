@@ -526,8 +526,9 @@
         let parsedMainSchedule = []; 
         let mainScheduleHeaders = [];
         let callScheduleMap = {}; 
-        let activeHighlights = new Set(); 
-        let currentZoomLevel; 
+        let activeHighlights = new Set();
+        let currentZoomLevel;
+        let lastAllZoomLevel = 1.0;
         let mdLastAssignmentWeekString = null; // Stores the week string for MD's last assignment
         let amLastAssignmentWeekString = null; // Stores the week string for AM's last assignment
 
@@ -536,8 +537,9 @@
         const scheduleDisplayContainer = document.getElementById('schedule-display');
         const noDataMessage = document.getElementById('no-data-message');
         const fellowButtonsContainer = document.getElementById('fellow-buttons-container');
-        const zoomSlider = document.getElementById('zoom-slider'); 
+        const zoomSlider = document.getElementById('zoom-slider');
         const zoomValueDisplay = document.getElementById('zoom-value');
+        const zoomSliderContainer = document.getElementById('zoom-slider-container');
         const exportIcsBtn = document.getElementById('export-ics-btn');
         const fellowButtonsDetails = document.getElementById('fellow-buttons-details');
         const legendToggleBtn = document.getElementById('legend-toggle-btn');
@@ -1369,13 +1371,25 @@
             noDataMessage.classList.add('hidden'); // Ensure noDataMessage is hidden before rendering
             if (selectedFellow === 'all') {
                 exportIcsBtn.classList.add('hidden');
-                fellowButtonsDetails.classList.remove('hidden'); 
-                if (fellowButtonsDetails) fellowButtonsDetails.open = !(window.innerWidth < 768); 
+                fellowButtonsDetails.classList.remove('hidden');
+                if (fellowButtonsDetails) fellowButtonsDetails.open = !(window.innerWidth < 768);
+
+                zoomSliderContainer.classList.remove('hidden');
+                currentZoomLevel = lastAllZoomLevel;
+                zoomSlider.value = currentZoomLevel;
+                zoomValueDisplay.textContent = `${Math.round(currentZoomLevel * 100)}%`;
 
                 scheduleDisplayContainer.classList.remove('hidden');
                 renderFullSchedule(parsedMainSchedule, true); // Scroll to current week when switching to all
             } else {
-                fellowButtonsDetails.classList.add('hidden'); 
+                fellowButtonsDetails.classList.add('hidden');
+
+                lastAllZoomLevel = currentZoomLevel;
+                currentZoomLevel = 1.0;
+                zoomSlider.value = currentZoomLevel;
+                zoomValueDisplay.textContent = `${Math.round(currentZoomLevel * 100)}%`;
+                zoomSliderContainer.classList.add('hidden');
+
                 scheduleDisplayContainer.classList.remove('hidden'); // Ensure table container is visible
                 renderFellowSchedule(selectedFellow, parsedMainSchedule, true); // Scroll to current week for individual
             }
@@ -1390,11 +1404,13 @@
             } else {
                 currentZoomLevel = 1.0;
             }
+            lastAllZoomLevel = currentZoomLevel;
 
             zoomSlider.min = "0.3"; 
             zoomSlider.max = "1.0"; 
             zoomSlider.value = currentZoomLevel; 
             zoomValueDisplay.textContent = `${Math.round(currentZoomLevel * 100)}%`;
+            zoomSliderContainer.classList.remove('hidden');
             
 
             applyZoomStyles(currentZoomLevel);
