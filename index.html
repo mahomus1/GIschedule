@@ -316,6 +316,17 @@
             text-align: center;
             font-weight: bold;
         }
+        /* Compact layout tweaks for small screens */
+        @media (max-width: 639px) {
+            .controls-wrapper { margin-bottom: 0.75rem; }
+            .controls { padding: 0.5rem; }
+            #fellow-select-label { font-size: 0.75rem; margin-bottom: 0.25rem; }
+            select { padding: 0.25rem 0.5rem; font-size: 0.75rem; }
+            .zoom-slider-container { margin-top: 0.25rem; font-size: 0.75rem; }
+            .legend-button-wrapper { margin-top: 0.25rem; margin-left: 0.25rem; }
+            .fellow-buttons-details, .legend-button-wrapper { margin-top: 0.5rem; }
+            .fellow-buttons-details summary { padding: 0.25rem 0.5rem; font-size: 0.75rem; }
+        }
         .hidden {
             display: none !important;
         }
