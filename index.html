@@ -1391,7 +1391,7 @@
 
             const loaded = await loadCsvData();
             if (!loaded) {
-                noDataMessage.textContent = 'Failed to load schedule data. If you opened this file directly, run `npm start` and visit http://localhost:3000';
+                noDataMessage.textContent = "Failed to load schedule data.";
                 noDataMessage.classList.remove('hidden');
                 scheduleDisplayContainer.classList.add('hidden');
                 return;
