@@ -11,6 +11,10 @@ npm install
 npm start
 ```
 
+Once running, open the interface by navigating to `http://localhost:3000` in a browser.
+The page relies on the server to load the CSV files, so opening `index.html`
+directly from the filesystem will display an empty schedule.
+
 ## Uploading schedule files
 
 Send a POST request to `/upload/:type` with `type` being either `main` or `call`. The request must include a `file` field containing the CSV.
