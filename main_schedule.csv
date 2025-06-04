@@ -1,4 +1,4 @@
-Week,UMH 1,UMH2,VA1,VA 2,VA 3,VA 4,Amb1,EOD1,EOD2,Research,Elective,Vacation
+Week,UMH 1,UMH2,VA1,VA 2,VA 3,VA 4*,Amb1,EOD1,EOD2,Research,Elective,Vacation
 6/30-7/4,MG,ZT,DF,XD,,,IM,MM,,,,
 7/7- 7/11,ZT,MG,IM,MM,,,DF,XD,,,,
 7/14-7/18,IM,DF,MG,EZ,MM,AM,AA,XD,ZT,MD,,
@@ -51,4 +51,3 @@ Week,UMH 1,UMH2,VA1,VA 2,VA 3,VA 4,Amb1,EOD1,EOD2,Research,Elective,Vacation
 06/08-06/12,AA,DF,EZ,IM,MD,,AM,ZT,MM,MG,,XD
 06/15-06/19,EZ,IM,DF,AM,MG,AA,MD,MM,XD,ZT,,
 06/22-06/26,IM,EZ,MD,MG,DF,AM,AA,XD,MM,,,ZT
-line2
