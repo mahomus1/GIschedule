@@ -25,6 +25,8 @@ curl -F "file=@main_schedule.csv" -F "password=mizzou" http://localhost:3000/upl
 
 Uploaded files are committed to the repository automatically. The server attempts to push the commit if a git remote is configured. If no remote exists, the push step is skipped and a warning is logged, but the file upload and commit still succeed.
 
+If the uploaded CSV is identical to the version already checked into the repository, the server logs `No changes to commit` and skips creating a new commit or push. The upload still succeeds and the same success message is returned.
+
 The API always responds with:
 
 ```
