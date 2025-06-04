@@ -1,7 +1,9 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
-const { execSync } = require('child_process');
+const { exec } = require('child_process');
+const util = require('util');
+const execAsync = util.promisify(exec);
 const fs = require('fs');
 
 const upload = multer({ dest: 'uploads/' });
@@ -11,7 +13,7 @@ const REPO_DIR = path.resolve(__dirname);
 
 app.use(express.static(REPO_DIR));
 
-app.post('/upload/:type', upload.single('file'), (req, res) => {
+app.post('/upload/:type', upload.single('file'), async (req, res) => {
   const { type } = req.params;
   const { password } = req.body;
   if (password !== 'mizzou') {
@@ -34,27 +36,27 @@ app.post('/upload/:type', upload.single('file'), (req, res) => {
   fs.renameSync(req.file.path, targetPath);
 
   try {
-    execSync(`git add ${targetFile}`, { cwd: REPO_DIR });
+    await execAsync(`git add ${targetFile}`, { cwd: REPO_DIR });
     let changes = true;
     try {
-      execSync('git diff --cached --quiet', { cwd: REPO_DIR });
+      await execAsync('git diff --cached --quiet', { cwd: REPO_DIR });
       changes = false;
     } catch (_) {
       changes = true;
     }
 
     if (changes) {
-      execSync(`git commit -m "Update ${targetFile} via upload"`, { cwd: REPO_DIR });
-
+        await execAsync(`git commit -m "Update ${targetFile} via upload"`, { cwd: REPO_DIR });
       let remote = '';
       try {
-        remote = execSync('git remote', { cwd: REPO_DIR, encoding: 'utf8' }).trim();
+        const { stdout } = await execAsync('git remote', { cwd: REPO_DIR });
+        remote = stdout.trim();
       } catch (remoteErr) {
         console.warn('Could not check git remote:', remoteErr.message);
       }
 
       if (remote) {
-        execSync('git push', { cwd: REPO_DIR });
+        await execAsync('git push', { cwd: REPO_DIR });
       } else {
         console.warn('No git remote configured. Skipping push.');
       }
