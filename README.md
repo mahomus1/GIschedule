@@ -29,7 +29,15 @@ curl -F "file=@call_schedule.csv" -F "password=mizzou" http://localhost:3000/upl
 
 ## Git integration
 
-Uploaded files are committed to the repository automatically. The server attempts to push the commit if a git remote is configured. If no remote exists, the push step is skipped and a warning is logged, but the file upload and commit still succeed.
+Uploaded files are committed to the repository automatically. To have these commits pushed to another repository, first configure a remote on the server:
+
+```bash
+git remote add origin <url>
+# optionally push your current branch to establish the upstream
+git push -u origin main
+```
+
+After each successful upload the server runs `git push`. Pushing only happens when a git remote is configured and accessible; otherwise the push step is skipped and a warning is logged, but the file upload and commit still succeed.
 
 If the uploaded CSV is identical to the version already checked into the repository, the server logs `No changes to commit` and skips creating a new commit or push. The upload still succeeds and the same success message is returned.
 
