@@ -1,13 +1,12 @@
 {
   "name": "schedule-server",
   "version": "1.0.0",
-  "description": "Backend server for uploading schedule CSVs",
+  "description": "Static server for the schedule interface",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
-    "express": "^4.18.2",
-    "multer": "^2.0.1"
+    "express": "^4.18.2"
   }
 }
