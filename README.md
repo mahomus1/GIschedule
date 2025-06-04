@@ -21,6 +21,12 @@ Example using `curl`:
 curl -F "file=@main_schedule.csv" -F "password=mizzou" http://localhost:3000/upload/main
 ```
 
+Another example for uploading the call schedule:
+
+```bash
+curl -F "file=@call_schedule.csv" -F "password=mizzou" http://localhost:3000/upload/call
+```
+
 ## Git integration
 
 Uploaded files are committed to the repository automatically. The server attempts to push the commit if a git remote is configured. If no remote exists, the push step is skipped and a warning is logged, but the file upload and commit still succeed.
