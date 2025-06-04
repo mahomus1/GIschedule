@@ -11,6 +11,33 @@ const app = express();
 
 const REPO_DIR = path.resolve(__dirname);
 
+async function ensureGitRepo() {
+  const gitDir = path.join(REPO_DIR, '.git');
+  if (!fs.existsSync(gitDir)) {
+    await execAsync('git init', { cwd: REPO_DIR });
+  }
+  let name = '';
+  let email = '';
+  try {
+    const { stdout } = await execAsync('git config user.name', { cwd: REPO_DIR });
+    name = stdout.trim();
+  } catch (_) {}
+  try {
+    const { stdout } = await execAsync('git config user.email', { cwd: REPO_DIR });
+    email = stdout.trim();
+  } catch (_) {}
+  if (!name) {
+    await execAsync('git config user.name "Server User"', { cwd: REPO_DIR });
+  }
+  if (!email) {
+    await execAsync('git config user.email "server@example.com"', { cwd: REPO_DIR });
+  }
+}
+
+ensureGitRepo().catch(err => {
+  console.error('Failed to initialize git repository:', err);
+});
+
 app.use(express.static(REPO_DIR));
 
 app.post('/upload/:type', upload.single('file'), async (req, res) => {
@@ -51,7 +78,11 @@ app.post('/upload/:type', upload.single('file'), async (req, res) => {
       }
 
       if (remote) {
-        await execAsync('git push', { cwd: REPO_DIR });
+        try {
+          await execAsync('git push', { cwd: REPO_DIR });
+        } catch (pushErr) {
+          console.warn('Git push failed:', pushErr.message);
+        }
       } else {
         console.warn('No git remote configured. Skipping push.');
       }
