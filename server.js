@@ -78,7 +78,11 @@ app.post('/upload/:type', upload.single('file'), async (req, res) => {
       }
 
       if (remote) {
-        await execAsync('git push', { cwd: REPO_DIR });
+        try {
+          await execAsync('git push', { cwd: REPO_DIR });
+        } catch (pushErr) {
+          console.warn('Git push failed:', pushErr.message);
+        }
       } else {
         console.warn('No git remote configured. Skipping push.');
       }
