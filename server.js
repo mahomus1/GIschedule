@@ -35,19 +35,31 @@ app.post('/upload/:type', upload.single('file'), (req, res) => {
 
   try {
     execSync(`git add ${targetFile}`, { cwd: REPO_DIR });
-    execSync(`git commit -m "Update ${targetFile} via upload"`, { cwd: REPO_DIR });
-
-    let remote = '';
+    let changes = true;
     try {
-      remote = execSync('git remote', { cwd: REPO_DIR, encoding: 'utf8' }).trim();
-    } catch (remoteErr) {
-      console.warn('Could not check git remote:', remoteErr.message);
+      execSync('git diff --cached --quiet', { cwd: REPO_DIR });
+      changes = false;
+    } catch (_) {
+      changes = true;
     }
 
-    if (remote) {
-      execSync('git push', { cwd: REPO_DIR });
+    if (changes) {
+      execSync(`git commit -m "Update ${targetFile} via upload"`, { cwd: REPO_DIR });
+
+      let remote = '';
+      try {
+        remote = execSync('git remote', { cwd: REPO_DIR, encoding: 'utf8' }).trim();
+      } catch (remoteErr) {
+        console.warn('Could not check git remote:', remoteErr.message);
+      }
+
+      if (remote) {
+        execSync('git push', { cwd: REPO_DIR });
+      } else {
+        console.warn('No git remote configured. Skipping push.');
+      }
     } else {
-      console.warn('No git remote configured. Skipping push.');
+      console.log('No changes to commit.');
     }
   } catch (err) {
     console.error(err);
