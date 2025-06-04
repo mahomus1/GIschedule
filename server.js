@@ -68,7 +68,7 @@ app.post('/upload/:type', upload.single('file'), async (req, res) => {
     }
 
     if (changes) {
-        await execAsync(`git commit -m "Update ${targetFile} via upload"`, { cwd: REPO_DIR });
+      await execAsync(`git commit -m "Update ${targetFile} via upload"`, { cwd: REPO_DIR });
       let remote = '';
       try {
         const { stdout } = await execAsync('git remote', { cwd: REPO_DIR });
@@ -90,8 +90,7 @@ app.post('/upload/:type', upload.single('file'), async (req, res) => {
       console.log('No changes to commit.');
     }
   } catch (err) {
-    console.error(err);
-    return res.status(500).send('Error updating repository.');
+    console.warn('Git operations failed:', err.message);
   }
 
   res.send('File uploaded. Repository updated.');
