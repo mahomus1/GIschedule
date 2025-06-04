@@ -423,12 +423,21 @@
         let callScheduleCsvData = '';
 
         async function loadCsvData() {
-            const [mainResp, callResp] = await Promise.all([
-                fetch('main_schedule.csv'),
-                fetch('call_schedule.csv')
-            ]);
-            mainScheduleCsvData = await mainResp.text();
-            callScheduleCsvData = await callResp.text();
+            try {
+                const [mainResp, callResp] = await Promise.all([
+                    fetch('main_schedule.csv'),
+                    fetch('call_schedule.csv')
+                ]);
+                if (!mainResp.ok || !callResp.ok) {
+                    throw new Error('CSV fetch failed');
+                }
+                mainScheduleCsvData = await mainResp.text();
+                callScheduleCsvData = await callResp.text();
+                return true;
+            } catch (err) {
+                console.error('Failed to load CSV data:', err);
+                return false;
+            }
         }
 
         async function uploadFile(type) {
@@ -447,10 +456,14 @@
 
             if (resp.ok) {
                 alert('Upload successful.');
-                await loadCsvData();
-                parsedMainSchedule = parseMainScheduleCSV(mainScheduleCsvData);
-                callScheduleMap = parseCallScheduleCSV(callScheduleCsvData);
-                renderFullSchedule(parsedMainSchedule, true);
+                const reloaded = await loadCsvData();
+                if (reloaded) {
+                    parsedMainSchedule = parseMainScheduleCSV(mainScheduleCsvData);
+                    callScheduleMap = parseCallScheduleCSV(callScheduleCsvData);
+                    renderFullSchedule(parsedMainSchedule, true);
+                } else {
+                    alert('Failed to reload schedule data.');
+                }
             } else {
                 alert('Upload failed');
             }
@@ -1437,7 +1450,14 @@
 
             applyZoomStyles(currentZoomLevel);
 
-            await loadCsvData();
+            const loaded = await loadCsvData();
+            if (!loaded) {
+                noDataMessage.textContent = 'Failed to load schedule data. If you opened this file directly, run `npm start` and visit http://localhost:3000';
+                noDataMessage.classList.remove('hidden');
+                scheduleDisplayContainer.classList.add('hidden');
+                if (adminToggleBtn) adminToggleBtn.classList.add('hidden');
+                return;
+            }
 
             setBaseSizingParameters();
             parsedMainSchedule = parseMainScheduleCSV(mainScheduleCsvData);
