@@ -34,3 +34,13 @@ File uploaded. Repository updated.
 ```
 
 This indicates the CSV was saved and committed. If a remote is configured, the commit is also pushed.
+
+## Troubleshooting
+
+Server logs are printed to stdout in the terminal running the server. The client
+only displays `Upload failed` when the server responds with an error status.
+Common causes include:
+
+- The provided password is incorrect.
+- Git is not installed on the machine.
+- The repository was never initialized with `git init`.
