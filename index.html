@@ -327,10 +327,6 @@
             .fellow-buttons-details, .legend-button-wrapper { margin-top: 0.5rem; }
             .fellow-buttons-details summary { padding: 0.25rem 0.5rem; font-size: 0.75rem; }
         }
-        #admin-toggle {
-            padding: 0.25rem 0.5rem;
-            font-size: 0.75rem;
-        }
         .hidden {
             display: none !important;
         }
@@ -383,24 +379,6 @@
                         </div>
                 </details>
 
-                <div id="upload-section" class="mt-4 space-y-2 hidden">
-                    <div>
-                        <input type="file" id="main-upload" accept=".csv" class="mb-1">
-                        <button class="action-btn" onclick="uploadFile('main')">Upload Main Schedule</button>
-                    </div>
-                    <div>
-                        <input type="file" id="call-upload" accept=".csv" class="mb-1">
-                        <button class="action-btn" onclick="uploadFile('call')">Upload Call Schedule</button>
-                    </div>
-                    <div id="upload-instructions" class="bg-yellow-50 border border-yellow-200 rounded p-2 text-sm hidden">
-                        <p><strong>Required CSV files:</strong></p>
-                        <ul class="list-disc ml-4">
-                            <li><code>main_schedule.csv</code> – must include a header row starting with <code>Week</code> followed by service columns.</li>
-                            <li><code>call_schedule.csv</code> – contains <code>Week</code> and <code>Call</code> columns.</li>
-                        </ul>
-                        <p class="mt-1">Ensure the filenames match exactly and retain the header row for proper parsing.</p>
-                    </div>
-                </div>
 
                 </div>
         </div>
@@ -413,7 +391,6 @@
             No schedule data found for the selected fellow.
         </div>
         <footer class="mizzou-footer">
-            <button id="admin-toggle" class="action-btn">Admin</button>
             <p>&copy; 2025 University of Missouri Gastroenterology Division</p>
         </footer>
         </div>
@@ -423,36 +400,20 @@
         let callScheduleCsvData = '';
 
         async function loadCsvData() {
-            const [mainResp, callResp] = await Promise.all([
-                fetch('main_schedule.csv'),
-                fetch('call_schedule.csv')
-            ]);
-            mainScheduleCsvData = await mainResp.text();
-            callScheduleCsvData = await callResp.text();
-        }
-
-        async function uploadFile(type) {
-            const input = document.getElementById(`${type}-upload`);
-            if (!input || !input.files.length) {
-                alert('Please choose a file first.');
-                return;
-            }
-            const formData = new FormData();
-            formData.append('file', input.files[0]);
-
-            const resp = await fetch(`/upload/${type}`, {
-                method: 'POST',
-                body: formData
-            });
-
-            if (resp.ok) {
-                alert('Upload successful.');
-                await loadCsvData();
-                parsedMainSchedule = parseMainScheduleCSV(mainScheduleCsvData);
-                callScheduleMap = parseCallScheduleCSV(callScheduleCsvData);
-                renderFullSchedule(parsedMainSchedule, true);
-            } else {
-                alert('Upload failed');
+            try {
+                const [mainResp, callResp] = await Promise.all([
+                    fetch('main_schedule.csv'),
+                    fetch('call_schedule.csv')
+                ]);
+                if (!mainResp.ok || !callResp.ok) {
+                    throw new Error('CSV fetch failed');
+                }
+                mainScheduleCsvData = await mainResp.text();
+                callScheduleCsvData = await callResp.text();
+                return true;
+            } catch (err) {
+                console.error('Failed to load CSV data:', err);
+                return false;
             }
         }
 
@@ -557,9 +518,6 @@
         const fellowButtonsDetails = document.getElementById('fellow-buttons-details');
         const legendToggleBtn = document.getElementById('legend-toggle-btn');
         const legendPopover = document.getElementById('legend-popover');
-        const adminToggleBtn = document.getElementById('admin-toggle');
-        const uploadSection = document.getElementById('upload-section');
-        const uploadInstructions = document.getElementById('upload-instructions');
 
         // Base sizing parameters for responsive zoom
         let BASE_FONT_SIZE_TD_REM;
@@ -1411,11 +1369,6 @@
             }
         });
 
-        function handleAdminToggle() {
-            if (uploadSection) uploadSection.classList.remove('hidden');
-            if (uploadInstructions) uploadInstructions.classList.remove('hidden');
-            if (adminToggleBtn) adminToggleBtn.classList.add('hidden');
-        }
 
         /**
          * Initializes the application: parses data, populates UI elements, and renders the initial schedule.
@@ -1437,7 +1390,13 @@
 
             applyZoomStyles(currentZoomLevel);
 
-            await loadCsvData();
+            const loaded = await loadCsvData();
+            if (!loaded) {
+                noDataMessage.textContent = 'Failed to load schedule data. If you opened this file directly, run `npm start` and visit http://localhost:3000';
+                noDataMessage.classList.remove('hidden');
+                scheduleDisplayContainer.classList.add('hidden');
+                return;
+            }
 
             setBaseSizingParameters();
             parsedMainSchedule = parseMainScheduleCSV(mainScheduleCsvData);
@@ -1451,9 +1410,6 @@
                  if(fellowSelect.value !== 'all') fellowButtonsDetails.classList.add('hidden');
             }
 
-            if (adminToggleBtn) {
-                adminToggleBtn.addEventListener('click', handleAdminToggle);
-            }
 
             legendToggleBtn.addEventListener('click', (event) => {
                 event.stopPropagation(); 
