@@ -378,8 +378,6 @@
                     <div id="fellow-buttons-container" class="fellow-buttons-container">
                         </div>
                 </details>
-
-
                 </div>
         </div>
 
@@ -400,23 +398,13 @@
         let callScheduleCsvData = '';
 
         async function loadCsvData() {
-            try {
-                const [mainResp, callResp] = await Promise.all([
-                    fetch('main_schedule.csv'),
-                    fetch('call_schedule.csv')
-                ]);
-                if (!mainResp.ok || !callResp.ok) {
-                    throw new Error('CSV fetch failed');
-                }
-                mainScheduleCsvData = await mainResp.text();
-                callScheduleCsvData = await callResp.text();
-                return true;
-            } catch (err) {
-                console.error('Failed to load CSV data:', err);
-                return false;
-            }
+            const [mainResp, callResp] = await Promise.all([
+                fetch('main_schedule.csv'),
+                fetch('call_schedule.csv')
+            ]);
+            mainScheduleCsvData = await mainResp.text();
+            callScheduleCsvData = await callResp.text();
         }
-
 
         // Fellow initials and names (can be expanded)
         let ALL_FELLOWS = ["ZT", "MM", "XD", "DF", "MG", "IM", "AA", "EZ", "AM", "MD"]; // Will be dynamically populated
@@ -501,9 +489,8 @@
         let parsedMainSchedule = []; 
         let mainScheduleHeaders = [];
         let callScheduleMap = {}; 
-        let activeHighlights = new Set();
-        let currentZoomLevel;
-        let lastAllZoomLevel = 1.0;
+        let activeHighlights = new Set(); 
+        let currentZoomLevel; 
         let mdLastAssignmentWeekString = null; // Stores the week string for MD's last assignment
         let amLastAssignmentWeekString = null; // Stores the week string for AM's last assignment
 
@@ -512,9 +499,8 @@
         const scheduleDisplayContainer = document.getElementById('schedule-display');
         const noDataMessage = document.getElementById('no-data-message');
         const fellowButtonsContainer = document.getElementById('fellow-buttons-container');
-        const zoomSlider = document.getElementById('zoom-slider');
+        const zoomSlider = document.getElementById('zoom-slider'); 
         const zoomValueDisplay = document.getElementById('zoom-value');
-        const zoomSliderContainer = document.getElementById('zoom-slider-container');
         const exportIcsBtn = document.getElementById('export-ics-btn');
         const fellowButtonsDetails = document.getElementById('fellow-buttons-details');
         const legendToggleBtn = document.getElementById('legend-toggle-btn');
@@ -565,7 +551,7 @@
 
             const isIndividual = table.querySelectorAll('thead th').length <= 2;
             if (isIndividual) {
-                table.style.width = '100%';
+                table.style.width = 'auto';
                 table.style.minWidth = '0';
             } else {
                 table.style.width = '100%';
@@ -1346,29 +1332,18 @@
             noDataMessage.classList.add('hidden'); // Ensure noDataMessage is hidden before rendering
             if (selectedFellow === 'all') {
                 exportIcsBtn.classList.add('hidden');
-                fellowButtonsDetails.classList.remove('hidden');
-                if (fellowButtonsDetails) fellowButtonsDetails.open = !(window.innerWidth < 768);
-
-                zoomSliderContainer.classList.remove('hidden');
-                currentZoomLevel = lastAllZoomLevel;
-                zoomSlider.value = currentZoomLevel;
-                zoomValueDisplay.textContent = `${Math.round(currentZoomLevel * 100)}%`;
+                fellowButtonsDetails.classList.remove('hidden'); 
+                if (fellowButtonsDetails) fellowButtonsDetails.open = !(window.innerWidth < 768); 
 
                 scheduleDisplayContainer.classList.remove('hidden');
                 renderFullSchedule(parsedMainSchedule, true); // Scroll to current week when switching to all
             } else {
-                fellowButtonsDetails.classList.add('hidden');
-
-                lastAllZoomLevel = currentZoomLevel;
-                currentZoomLevel = 1.0;
-                zoomSlider.value = currentZoomLevel;
-                zoomValueDisplay.textContent = `${Math.round(currentZoomLevel * 100)}%`;
-                zoomSliderContainer.classList.add('hidden');
-
+                fellowButtonsDetails.classList.add('hidden'); 
                 scheduleDisplayContainer.classList.remove('hidden'); // Ensure table container is visible
                 renderFellowSchedule(selectedFellow, parsedMainSchedule, true); // Scroll to current week for individual
             }
         });
+
         /**
          * Initializes the application: parses data, populates UI elements, and renders the initial schedule.
          */
@@ -1378,37 +1353,28 @@
             } else {
                 currentZoomLevel = 1.0;
             }
-            lastAllZoomLevel = currentZoomLevel;
 
             zoomSlider.min = "0.3"; 
             zoomSlider.max = "1.0"; 
             zoomSlider.value = currentZoomLevel; 
             zoomValueDisplay.textContent = `${Math.round(currentZoomLevel * 100)}%`;
-            zoomSliderContainer.classList.remove('hidden');
             
 
             applyZoomStyles(currentZoomLevel);
 
-            const loaded = await loadCsvData();
-            if (!loaded) {
-                noDataMessage.textContent = "Failed to load schedule data.";
-                noDataMessage.classList.remove('hidden');
-                scheduleDisplayContainer.classList.add('hidden');
-                return;
-            }
+            await loadCsvData();
 
             setBaseSizingParameters();
             parsedMainSchedule = parseMainScheduleCSV(mainScheduleCsvData);
             callScheduleMap = parseCallScheduleCSV(callScheduleCsvData);
-            populateFellowDropdown();
-            populateFellowButtons();
+            populateFellowDropdown(); 
+            populateFellowButtons();  
             renderFullSchedule(parsedMainSchedule, true); // Initial render, scroll to current week
 
             if (fellowButtonsDetails) {
                  fellowButtonsDetails.open = !(window.innerWidth < 768 && fellowSelect.value === 'all');
                  if(fellowSelect.value !== 'all') fellowButtonsDetails.classList.add('hidden');
             }
-
 
             legendToggleBtn.addEventListener('click', (event) => {
                 event.stopPropagation(); 
