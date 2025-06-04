@@ -53,7 +53,6 @@ This indicates the CSV was saved and committed. If a remote is configured, the c
 
 Server logs are printed to stdout in the terminal running the server. The client
 only displays `Upload failed` when the server responds with an error status.
-Common causes include:
-
-- Git is not installed on the machine.
-- The repository was never initialized with `git init`.
+Uploads will still succeed even if Git commands fail, but commits and pushes
+won't happen. To ensure version history, check that Git is installed and the
+repository has been initialized with `git init`.
