@@ -13,18 +13,18 @@ npm start
 
 ## Uploading schedule files
 
-Send a POST request to `/upload/:type` with `type` being either `main` or `call`. The request must include a `file` field containing the CSV and a `password` field set to `mizzou`.
+Send a POST request to `/upload/:type` with `type` being either `main` or `call`. The request must include a `file` field containing the CSV.
 
 Example using `curl`:
 
 ```bash
-curl -F "file=@main_schedule.csv" -F "password=mizzou" http://localhost:3000/upload/main
+curl -F "file=@main_schedule.csv" http://localhost:3000/upload/main
 ```
 
 Another example for uploading the call schedule:
 
 ```bash
-curl -F "file=@call_schedule.csv" -F "password=mizzou" http://localhost:3000/upload/call
+curl -F "file=@call_schedule.csv" http://localhost:3000/upload/call
 ```
 
 ## Git integration
@@ -55,6 +55,5 @@ Server logs are printed to stdout in the terminal running the server. The client
 only displays `Upload failed` when the server responds with an error status.
 Common causes include:
 
-- The provided password is incorrect.
 - Git is not installed on the machine.
 - The repository was never initialized with `git init`.

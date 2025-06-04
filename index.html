@@ -421,7 +421,6 @@
     <script>
         let mainScheduleCsvData = '';
         let callScheduleCsvData = '';
-        let adminPassword = '';
 
         async function loadCsvData() {
             const [mainResp, callResp] = await Promise.all([
@@ -440,9 +439,6 @@
             }
             const formData = new FormData();
             formData.append('file', input.files[0]);
-            if (adminPassword) {
-                formData.append('password', adminPassword);
-            }
 
             const resp = await fetch(`/upload/${type}`, {
                 method: 'POST',
@@ -1416,15 +1412,9 @@
         });
 
         function handleAdminToggle() {
-            const pw = prompt('Enter admin password:');
-            if (pw === 'mizzou') {
-                adminPassword = pw;
-                if (uploadSection) uploadSection.classList.remove('hidden');
-                if (uploadInstructions) uploadInstructions.classList.remove('hidden');
-                if (adminToggleBtn) adminToggleBtn.classList.add('hidden');
-            } else {
-                alert('Incorrect password.');
-            }
+            if (uploadSection) uploadSection.classList.remove('hidden');
+            if (uploadInstructions) uploadInstructions.classList.remove('hidden');
+            if (adminToggleBtn) adminToggleBtn.classList.add('hidden');
         }
 
         /**
