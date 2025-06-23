@@ -207,7 +207,18 @@
         .current-week-highlight td:first-child { background-color: var(--mizzou-hover-gold) !important; }
         
         /* Call icon and asterisk */
-        .call-icon-inline { margin-left: 0.25rem; font-size: 0.75em; }
+        .call-icon-inline {
+            margin-left: 0.25rem;
+            font-size: 0.75em;
+            display: inline-block;
+            line-height: 1;
+            text-align: center;
+        }
+        .call-date-range {
+            display: block;
+            font-size: 0.6em;
+            margin-top: -2px;
+        }
         .asterisk-note {
             color: #000000; /* Black for visibility */
             font-weight: bold; /* Make it stand out */
@@ -681,23 +692,42 @@
         }
 
         /**
-         * Parses the call schedule CSV data string into a map.
+         * Parses the call schedule CSV data string into a map with call date ranges.
          * @param {string} data - The CSV data as a string.
-         * @returns {Object} A map where keys are week strings and values are fellow initials.
+         * @returns {Object} A map where keys are week strings and values contain
+         *                   the on call fellow and the formatted call range.
          */
         function parseCallScheduleCSV(data) {
             const map = {};
             const lines = data.trim().split('\n');
-            // Check if the first line is a header and skip it
-            const startIndex = lines[0].toLowerCase().includes('week') ? 1 : 0; 
+            const startIndex = lines[0].toLowerCase().includes('week') ? 1 : 0;
+            let yearContext = 2025;
             for (let i = startIndex; i < lines.length; i++) {
                 const line = lines[i].trim();
-                if (!line) continue; // Skip empty lines
+                if (!line) continue;
                 const parts = line.split(',');
                 if (parts.length === 2) {
                     const weekRange = parts[0].trim();
                     const fellow = parts[1].trim();
-                    map[weekRange] = fellow;
+
+                    const { start, end, nextYearContext } = getFullDateObjectsForWeek(weekRange, yearContext);
+                    yearContext = nextYearContext;
+
+                    const callStart = new Date(start);
+                    callStart.setDate(callStart.getDate() - 3); // Friday before
+                    const callEnd = new Date(end); // Friday of the week
+
+                    const endHasYear = weekRange.split('-')[1].split('/').length === 3;
+                    const format = (date, includeYear) => {
+                        const m = date.getMonth() + 1;
+                        const d = date.getDate();
+                        const y = String(date.getFullYear()).slice(-2);
+                        return includeYear ? `${m}/${d}/${y}` : `${m}/${d}`;
+                    };
+
+                    const callRange = `${format(callStart, false)}-${format(callEnd, endHasYear)}`;
+
+                    map[weekRange] = { fellow, callRange };
                 }
             }
             return map;
@@ -968,7 +998,8 @@
                 }
 
 
-                const fellowOnCallThisWeek = callScheduleMap[weekString];
+                const callInfo = callScheduleMap[weekString];
+                const fellowOnCallThisWeek = callInfo ? callInfo.fellow : null;
                 const holidayIndicatorsHtml = getHolidayIndicatorsForWeek(weekString, weekData.fullStartDate, weekData.fullEndDate);
 
 
@@ -980,7 +1011,8 @@
                     // Add call icon if this fellow is on call
                     const cellFellows = cellContent.split('&');
                     if (cellFellows.some(cf => ALL_FELLOWS.includes(cf) && cf === fellowOnCallThisWeek)) {
-                         cellHtml += ` <span class="call-icon-inline">📞</span>`;
+                        const callRangeStr = callInfo ? callInfo.callRange : '';
+                        cellHtml += ` <span class="call-icon-inline">📞<span class="call-date-range">${callRangeStr}</span></span>`;
                     }
                     
                     // Add asterisk for specific holiday coverage
@@ -1133,9 +1165,9 @@
 
                 let rotationCellContent = assignment.rotation; 
                 
-                const fellowOnCallThisWeek = callScheduleMap[weekString];
-                if (fellowInitial === fellowOnCallThisWeek) {
-                    rotationCellContent += ` <span class="call-icon-inline">📞</span>`;
+                const callInfoForWeek = callScheduleMap[weekString];
+                if (callInfoForWeek && fellowInitial === callInfoForWeek.fellow) {
+                    rotationCellContent += ` <span class="call-icon-inline">📞<span class="call-date-range">${callInfoForWeek.callRange}</span></span>`;
                 }
                 
                 let hasSpecificHolidayCoverage = false;
