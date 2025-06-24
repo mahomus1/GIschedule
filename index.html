@@ -224,7 +224,7 @@
         }
         .backup-call-icon-inline {
             margin-left: 0.15rem;
-            font-size: 0.6em;
+            font-size: 0.4em; /* Make the superscript B even less prominent */
             color: #6b7280; /* gray-600 for subtle indication */
             vertical-align: super;
         }
@@ -377,7 +377,7 @@
                          <div class="legend-button-wrapper">
                             <button id="legend-toggle-btn">Legend ℹ️</button>
                             <div id="legend-popover" class="hidden absolute mt-1"> <p><span class="legend-symbol">📞</span> = On Call</p>
-                                <p><span class="legend-symbol" style="color:#6b7280;">B</span> = Backup Call <small>(hover for dates)</small></p>
+                                <p><span class="legend-symbol"><sup class="backup-call-icon-inline" style="color:#6b7280;">B</sup></span> = Backup Call <small>(hover for dates)</small></p>
                                 <p class="mt-1"><em>Note: Call starts Friday 4:30 PM of the preceding week and ends Friday morning of the listed week.</em></p>
                                 <hr class="my-2">
                                 <p><strong>Specific Holiday Coverage:</strong></p>
