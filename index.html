@@ -222,6 +222,16 @@
             line-height: 1;
             margin-top: 0.1em; /* Give a little space below the icon */
         }
+        .backup-call-icon-inline {
+            margin-left: 0.25rem;
+            font-size: 0.75em;
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            line-height: 1;
+            min-width: 1.5em;
+            color: #6b7280; /* gray-600 for subtle indication */
+        }
         .asterisk-note {
             color: #000000; /* Black for visibility */
             font-weight: bold; /* Make it stand out */
@@ -371,6 +381,7 @@
                          <div class="legend-button-wrapper">
                             <button id="legend-toggle-btn">Legend ℹ️</button>
                             <div id="legend-popover" class="hidden absolute mt-1"> <p><span class="legend-symbol">📞</span> = On Call</p>
+                                <p><span class="legend-symbol" style="color:#6b7280;">📞B</span> = Backup Call</p>
                                 <p class="mt-1"><em>Note: Call starts Friday 4:30 PM of the preceding week and ends Friday morning of the listed week.</em></p>
                                 <hr class="my-2">
                                 <p><strong>Specific Holiday Coverage:</strong></p>
@@ -411,14 +422,17 @@
     <script>
         let mainScheduleCsvData = '';
         let callScheduleCsvData = '';
+        let backupCallScheduleCsvData = '';
 
         async function loadCsvData() {
-            const [mainResp, callResp] = await Promise.all([
+            const [mainResp, callResp, backupCallResp] = await Promise.all([
                 fetch('main_schedule.csv'),
-                fetch('call_schedule.csv')
+                fetch('call_schedule.csv'),
+                fetch('backup_call_schedule.csv')
             ]);
             mainScheduleCsvData = await mainResp.text();
             callScheduleCsvData = await callResp.text();
+            backupCallScheduleCsvData = await backupCallResp.text();
         }
 
         // Fellow initials and names (can be expanded)
@@ -501,9 +515,10 @@
 
 
         // Global state variables
-        let parsedMainSchedule = []; 
+        let parsedMainSchedule = [];
         let mainScheduleHeaders = [];
-        let callScheduleMap = {}; 
+        let callScheduleMap = {};
+        let backupCallScheduleMap = {};
         let activeHighlights = new Set(); 
         let currentZoomLevel; 
         let mdLastAssignmentWeekString = null; // Stores the week string for MD's last assignment
@@ -605,6 +620,12 @@
             callIcons.forEach(ci => {
                 const computedSize = BASE_FONT_SIZE_CALL_ICON_EM * zoomFactor;
                 ci.style.fontSize = `${Math.max(computedSize, MIN_CALL_ICON_FONT_SIZE_EM)}em`; // Ensure icon remains legible
+            });
+            // Apply styles to backup call icons
+            const backupCallIcons = table.querySelectorAll('.backup-call-icon-inline');
+            backupCallIcons.forEach(ci => {
+                const computedSize = BASE_FONT_SIZE_CALL_ICON_EM * zoomFactor;
+                ci.style.fontSize = `${Math.max(computedSize, MIN_CALL_ICON_FONT_SIZE_EM)}em`;
             });
         }
 
@@ -1003,6 +1024,8 @@
 
                 const callInfo = callScheduleMap[weekString];
                 const fellowOnCallThisWeek = callInfo ? callInfo.fellow : null;
+                const backupCallInfo = backupCallScheduleMap[weekString];
+                const fellowOnBackupCallThisWeek = backupCallInfo ? backupCallInfo.fellow : null;
                 const holidayIndicatorsHtml = getHolidayIndicatorsForWeek(weekString, weekData.fullStartDate, weekData.fullEndDate);
 
 
@@ -1016,6 +1039,11 @@
                     if (cellFellows.some(cf => ALL_FELLOWS.includes(cf) && cf === fellowOnCallThisWeek)) {
                         const callRangeStr = callInfo ? callInfo.callRange : '';
                         cellHtml += ` <span class="call-icon-inline">📞<span class="call-date-range">${callRangeStr}</span></span>`;
+                    }
+                    // Add backup call icon if this fellow is backup
+                    if (cellFellows.some(cf => ALL_FELLOWS.includes(cf) && cf === fellowOnBackupCallThisWeek)) {
+                        const backupRangeStr = backupCallInfo ? backupCallInfo.callRange : '';
+                        cellHtml += ` <span class="backup-call-icon-inline">📞<span class="call-date-range">B ${backupRangeStr}</span></span>`;
                     }
                     
                     // Add asterisk for specific holiday coverage
@@ -1171,6 +1199,10 @@
                 const callInfoForWeek = callScheduleMap[weekString];
                 if (callInfoForWeek && fellowInitial === callInfoForWeek.fellow) {
                     rotationCellContent += ` <span class="call-icon-inline">📞<span class="call-date-range">${callInfoForWeek.callRange}</span></span>`;
+                }
+                const backupCallInfoForWeek = backupCallScheduleMap[weekString];
+                if (backupCallInfoForWeek && fellowInitial === backupCallInfoForWeek.fellow) {
+                    rotationCellContent += ` <span class="backup-call-icon-inline">📞<span class="call-date-range">B ${backupCallInfoForWeek.callRange}</span></span>`;
                 }
                 
                 let hasSpecificHolidayCoverage = false;
@@ -1403,6 +1435,7 @@
             setBaseSizingParameters();
             parsedMainSchedule = parseMainScheduleCSV(mainScheduleCsvData);
             callScheduleMap = parseCallScheduleCSV(callScheduleCsvData);
+            backupCallScheduleMap = parseCallScheduleCSV(backupCallScheduleCsvData);
             populateFellowDropdown(); 
             populateFellowButtons();  
             renderFullSchedule(parsedMainSchedule, true); // Initial render, scroll to current week
