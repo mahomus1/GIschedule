@@ -285,17 +285,32 @@
         .call-indicator.show-tooltip .indicator-tooltip { ... }
         .backup-indicator.show-tooltip .indicator-tooltip { ... }
         */
-        .asterisk-note {
-            color: #000000; /* Black for visibility */
-            font-weight: bold; /* Make it stand out */
-            margin-left: 1px; /* Small space */
-            font-size: 0.9em; /* Slightly smaller than cell text */
+
+        /* Badge styles for holiday and weekend indicators */
+        .holiday-badge {
+            display: inline-block;
+            background: #DC2626; /* Red */
+            color: white;
+            font-size: 0.6em;
+            padding: 0 3px;
+            border-radius: 3px;
+            margin-left: 2px;
+            font-weight: 700;
+            vertical-align: super;
+            cursor: help;
         }
-        .asterisk-note {
-            color: #000000; /* Black for visibility */
-            font-weight: bold; /* Make it stand out */
-            margin-left: 1px; /* Small space */
-            font-size: 0.9em; /* Slightly smaller than cell text */
+
+        .weekend-badge {
+            display: inline-block;
+            background: #7C3AED; /* Purple */
+            color: white;
+            font-size: 0.6em;
+            padding: 0 3px;
+            border-radius: 3px;
+            margin-left: 2px;
+            font-weight: 700;
+            vertical-align: super;
+            cursor: help;
         }
         
         /* Holiday indicator styles */
@@ -456,15 +471,15 @@
                                 <p class="mt-1"><em>Note: Call starts Friday 4:30 PM of the preceding week and ends Friday morning of the listed week.</em></p>
                                 <hr class="my-2">
                                 <p><strong>Specific Holiday Coverage:</strong></p>
-                                <p><span class="legend-symbol">*</span> DF: Labor Day (Sep 1, 2025)</p>
-                                <p><span class="legend-symbol">*</span> MG: 4th of July (Jul 4, 2025)</p>
-                                <p><span class="legend-symbol">*</span> IM: Thanksgiving (Nov 27, 2025)</p>
-                                <p><span class="legend-symbol">*</span> AA: Christmas (Dec 25, 2025), Memorial Day (May 26, 2025)</p>
-                                <p><span class="legend-symbol">*</span> EZ: Black Friday (Nov 28, 2025), MLK Day (Jan 19, 2026)</p>
-                                <p><span class="legend-symbol">*</span> AM: Juneteenth (Jun 19, 2025)</p>
-                                <p><span class="legend-symbol">*</span> MD: New Year's Day (Jan 1, 2026)</p>
+                                <p><span class="legend-symbol holiday-badge">H</span> DF: Labor Day (Sep 1, 2025)</p>
+                                <p><span class="legend-symbol holiday-badge">H</span> MG: 4th of July (Jul 4, 2025)</p>
+                                <p><span class="legend-symbol holiday-badge">H</span> IM: Thanksgiving (Nov 27, 2025)</p>
+                                <p><span class="legend-symbol holiday-badge">H</span> AA: Christmas (Dec 25, 2025), Memorial Day (May 26, 2025)</p>
+                                <p><span class="legend-symbol holiday-badge">H</span> EZ: Black Friday (Nov 28, 2025), MLK Day (Jan 19, 2026)</p>
+                                <p><span class="legend-symbol holiday-badge">H</span> AM: Juneteenth (Jun 19, 2025)</p>
+                                <p><span class="legend-symbol holiday-badge">H</span> MD: New Year's Day (Jan 1, 2026)</p>
                                 <hr class="my-1">
-                                <p><span class="legend-symbol">**</span> Last Weekend Call (MD, AM)</p>
+                                <p><span class="legend-symbol weekend-badge">W</span> Last Weekend Call (MD, AM)</p>
                                 <p class="mt-1">If four fellows are present in the afternoon, VA4 may be reassigned to clinic or another duty.</p>
                              </div>
                         </div>
@@ -1110,27 +1125,23 @@
                     });
                     let cellHtml = decoratedFellows.join('&');
                     
-                    // Add asterisk for specific holiday coverage
+                    // Add indicators for holiday coverage and last weekend call
                     cellFellows.forEach(cf => {
-                        if (ALL_FELLOWS.includes(cf)) { 
+                        if (ALL_FELLOWS.includes(cf)) {
                             specificHolidayCoverage.forEach(coverage => {
-                                if (coverage.fellow === cf && 
-                                    coverage.date >= weekData.fullStartDate && 
+                                if (coverage.fellow === cf &&
+                                    coverage.date >= weekData.fullStartDate &&
                                     coverage.date <= weekData.fullEndDate) {
-                                    if (!cellHtml.includes(`<span class="asterisk-note">*</span>`)) {
-                                        cellHtml += ` <span class="asterisk-note">*</span>`;
+                                    if (!cellHtml.includes('holiday-badge')) {
+                                        cellHtml += ` <span class="holiday-badge">H</span>`;
                                     }
                                 }
                             });
                             if (cf === 'MD' && weekString === mdLastAssignmentWeekString) {
-                                 if (!cellHtml.includes(`<span class="asterisk-note">**</span>`)) {
-                                     cellHtml += ` <span class="asterisk-note">**</span>`;
-                                 }
+                                cellHtml += ` <span class="weekend-badge">W</span>`;
                             }
                             if (cf === 'AM' && weekString === amLastAssignmentWeekString) {
-                                 if (!cellHtml.includes(`<span class="asterisk-note">**</span>`)) {
-                                     cellHtml += ` <span class="asterisk-note">**</span>`;
-                                 }
+                                cellHtml += ` <span class="weekend-badge">W</span>`;
                             }
                         }
                     });
@@ -1283,14 +1294,14 @@
                     }
                 });
                 if (hasSpecificHolidayCoverage) {
-                    rotationCellContent += ` <span class="asterisk-note">*</span>`;
+                    rotationCellContent += ` <span class="holiday-badge">H</span>`;
                 }
 
                 if (fellowInitial === 'MD' && weekString === mdLastAssignmentWeekString && assignment.displayRotation.includes('MD')) {
-                     rotationCellContent += ` <span class="asterisk-note">**</span>`;
+                     rotationCellContent += ` <span class="weekend-badge">W</span>`;
                 }
                 if (fellowInitial === 'AM' && weekString === amLastAssignmentWeekString && assignment.displayRotation.includes('AM')) {
-                     rotationCellContent += ` <span class="asterisk-note">**</span>`;
+                     rotationCellContent += ` <span class="weekend-badge">W</span>`;
                 }
 
 
