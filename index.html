@@ -239,6 +239,38 @@
             display: inline-block;
         }
 
+        .badge-tooltip {
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(15, 15, 15, 0.95);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.7rem;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.2s ease;
+            z-index: 100;
+        }
+        .badge-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 3px solid transparent;
+            border-top-color: rgba(15, 15, 15, 0.95);
+        }
+        .initials-call:hover .badge-tooltip,
+        .initials-backup:hover .badge-tooltip,
+        .initials-both:hover .badge-tooltip {
+            opacity: 1;
+            bottom: 140%;
+        }
+
         /* Old indicator styles are no longer used */
         /*
         .cell-wrapper { ... }
@@ -417,7 +449,6 @@
                             <div id="legend-popover" class="hidden absolute mt-1">
                                 <p><span class="initials-call" style="font-size: 0.8em; padding: 1px 3px;">XX</span> = On Call</p>
                                 <p><span class="initials-backup" style="font-size: 0.8em; padding: 1px 3px;">XX</span> = Backup Call</p>
-                                <p><span class="initials-both" style="font-size: 0.8em; padding: 1px 3px;">XX</span> = On Call + Backup</p>
                                 <p class="mt-1"><em>Note: Call starts Friday 4:30 PM of the preceding week and ends Friday morning of the listed week.</em></p>
                                 <hr class="my-2">
                                 <p><strong>Specific Holiday Coverage:</strong></p>
@@ -1064,11 +1095,11 @@
                             const callRangeStr = callInfo ? callInfo.callRange : '';
                             const backupRangeStr = backupCallInfo ? backupCallInfo.callRange : '';
                             if (isCall && isBackup) {
-                                decorated = `<span class="initials-both" title="On Call + Backup: ${callRangeStr}">${cf}</span>`;
+                                decorated = `<span class="initials-both">${cf}<span class="badge-tooltip">On Call + Backup: ${callRangeStr}</span></span>`;
                             } else if (isCall) {
-                                decorated = `<span class="initials-call" title="On Call: ${callRangeStr}">${cf}</span>`;
+                                decorated = `<span class="initials-call">${cf}<span class="badge-tooltip">On Call: ${callRangeStr}</span></span>`;
                             } else if (isBackup) {
-                                decorated = `<span class="initials-backup" title="Backup: ${backupRangeStr}">${cf}</span>`;
+                                decorated = `<span class="initials-backup">${cf}<span class="badge-tooltip">Backup: ${backupRangeStr}</span></span>`;
                             }
                         }
                         return decorated;
@@ -1223,15 +1254,19 @@
                 weekCell.style.position = 'sticky'; weekCell.style.left = '0'; weekCell.style.zIndex = '5';
                 row.appendChild(weekCell);
 
-                let rotationCellContent = `<span class="cell-wrapper">${assignment.rotation}`;
-                
+                let rotationCellContent = `${assignment.rotation}`;
+
                 const callInfoForWeek = callScheduleMap[weekString];
-                if (callInfoForWeek && fellowInitial === callInfoForWeek.fellow) {
-                    rotationCellContent += ` <span class="call-indicator">●<span class="indicator-tooltip">On Call: ${callInfoForWeek.callRange}</span></span>`;
-                }
+                const isCall = callInfoForWeek && fellowInitial === callInfoForWeek.fellow;
                 const backupCallInfoForWeek = backupCallScheduleMap[weekString];
-                if (backupCallInfoForWeek && fellowInitial === backupCallInfoForWeek.fellow) {
-                    rotationCellContent += ` <span class="backup-indicator">●<span class="indicator-tooltip">Backup: ${backupCallInfoForWeek.callRange}</span></span>`;
+                const isBackup = backupCallInfoForWeek && fellowInitial === backupCallInfoForWeek.fellow;
+
+                if (isCall && isBackup) {
+                    rotationCellContent += ` <span class="initials-both">${fellowInitial}<span class="badge-tooltip">On Call + Backup: ${callInfoForWeek.callRange}</span></span>`;
+                } else if (isCall) {
+                    rotationCellContent += ` <span class="initials-call">${fellowInitial}<span class="badge-tooltip">On Call: ${callInfoForWeek.callRange}</span></span>`;
+                } else if (isBackup) {
+                    rotationCellContent += ` <span class="initials-backup">${fellowInitial}<span class="badge-tooltip">Backup: ${backupCallInfoForWeek.callRange}</span></span>`;
                 }
                 
                 let hasSpecificHolidayCoverage = false;
@@ -1254,7 +1289,6 @@
                      rotationCellContent += ` <span class="asterisk-note">**</span>`;
                 }
 
-                rotationCellContent += '</span>';
 
                 const rotationCell = document.createElement('td');
                 rotationCell.innerHTML = rotationCellContent;
