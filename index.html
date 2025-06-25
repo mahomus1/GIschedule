@@ -266,7 +266,10 @@
         }
         .initials-call:hover .badge-tooltip,
         .initials-backup:hover .badge-tooltip,
-        .initials-both:hover .badge-tooltip {
+        .initials-both:hover .badge-tooltip,
+        .initials-call.show-tooltip .badge-tooltip,
+        .initials-backup.show-tooltip .badge-tooltip,
+        .initials-both.show-tooltip .badge-tooltip {
             opacity: 1;
             bottom: 140%;
         }
@@ -449,6 +452,7 @@
                             <div id="legend-popover" class="hidden absolute mt-1">
                                 <p><span class="initials-call" style="font-size: 0.8em; padding: 1px 3px;">XX</span> = On Call</p>
                                 <p><span class="initials-backup" style="font-size: 0.8em; padding: 1px 3px;">XX</span> = Backup Call</p>
+                                <p class="mt-1">Tap or hover on these initials to view call dates.</p>
                                 <p class="mt-1"><em>Note: Call starts Friday 4:30 PM of the preceding week and ends Friday morning of the listed week.</em></p>
                                 <hr class="my-2">
                                 <p><strong>Specific Holiday Coverage:</strong></p>
@@ -1357,7 +1361,7 @@
         function downloadICSFile(filename, content) {
             const blob = new Blob([content], { type: 'text/calendar;charset=utf-8;' });
             const link = document.createElement("a");
-            if (link.download !== undefined) { 
+            if (link.download !== undefined) {
                 const url = URL.createObjectURL(blob);
                 link.setAttribute("href", url);
                 link.setAttribute("download", filename);
@@ -1367,6 +1371,30 @@
                 document.body.removeChild(link);
                 URL.revokeObjectURL(url);
             }
+        }
+
+        /**
+         * Handles click or touch events on call/backup badges to toggle tooltip visibility.
+         * Utilizes event delegation on the schedule display container.
+         * @param {Event} event - The click or touch event.
+         */
+        function handleCallBadgeToggle(event) {
+            const badge = event.target.closest('.initials-call, .initials-backup, .initials-both');
+            if (!badge) return;
+
+            event.stopPropagation();
+            const wasShown = badge.classList.contains('show-tooltip');
+            document.querySelectorAll('.initials-call.show-tooltip, .initials-backup.show-tooltip, .initials-both.show-tooltip')
+                .forEach(el => el.classList.remove('show-tooltip'));
+            if (!wasShown) badge.classList.add('show-tooltip');
+        }
+
+        /**
+         * Hides all visible call/backup tooltips.
+         */
+        function hideAllCallBadges() {
+            document.querySelectorAll('.initials-call.show-tooltip, .initials-backup.show-tooltip, .initials-both.show-tooltip')
+                .forEach(el => el.classList.remove('show-tooltip'));
         }
 
         // Event listener for ICS export button
@@ -1500,8 +1528,16 @@
             parsedMainSchedule = parseMainScheduleCSV(mainScheduleCsvData);
             callScheduleMap = parseCallScheduleCSV(callScheduleCsvData);
             backupCallScheduleMap = parseCallScheduleCSV(backupCallScheduleCsvData);
-            populateFellowDropdown(); 
-            populateFellowButtons();  
+            populateFellowDropdown();
+            populateFellowButtons();
+            ['click','touchstart'].forEach(evt => {
+                scheduleDisplayContainer.addEventListener(evt, handleCallBadgeToggle);
+            });
+            document.addEventListener('click', (event) => {
+                if (!event.target.closest('.initials-call, .initials-backup, .initials-both')) {
+                    hideAllCallBadges();
+                }
+            });
             renderFullSchedule(parsedMainSchedule, true); // Initial render, scroll to current week
 
             if (fellowButtonsDetails) {
