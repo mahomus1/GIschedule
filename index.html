@@ -207,6 +207,13 @@
         .current-week-highlight td { background-color: var(--mizzou-hover-gold) !important; }
         .current-week-highlight td:first-child { background-color: var(--mizzou-hover-gold) !important; }
         
+        /* Wrapper around cell content so indicators can be positioned */
+        .cell-wrapper {
+            position: relative;
+            display: inline-block;
+            padding-right: 0.35em; /* space for indicator */
+        }
+
         /* Call/Backup indicators with tooltip */
         .call-indicator, .backup-indicator {
             display: inline-flex;
@@ -214,24 +221,26 @@
             justify-content: center;
             border-radius: 50%;
             font-weight: 700;
-            font-size: 0.6em;
-            position: relative;
-            margin-left: 0.25rem;
+            font-size: 0.5em;
+            position: absolute;
         }
         .call-indicator {
-            width: 1.2rem;
-            height: 1.2rem;
+            width: 0.85em;
+            height: 0.85em;
+            top: -0.4em;
+            right: -0.4em;
             background: linear-gradient(135deg, var(--mizzou-gold) 0%, var(--mizzou-gold-dark) 100%);
             color: var(--mizzou-black);
             border: 1px solid var(--mizzou-gold-dark);
             box-shadow: 0 1px 2px rgba(0,0,0,0.3);
         }
         .backup-indicator {
-            width: 0.75rem;
-            height: 0.75rem;
+            width: 0.65em;
+            height: 0.65em;
+            top: -0.35em;
+            right: -0.35em;
             background: #64748b;
             color: #ffffff;
-            font-size: 0.55em;
         }
         .indicator-tooltip {
             position: absolute;
@@ -381,6 +390,9 @@
         }
         .legend-indicator {
             font-size: 0.55rem;
+            position: static;
+            top: auto;
+            right: auto;
         }
         #legend-popover .call-indicator,
         #legend-popover .backup-indicator {
@@ -657,23 +669,6 @@
                 hc.style.fontSize = `${BASE_FONT_SIZE_HOLIDAY_CONTAINER_REM * zoomFactor}rem`;
             });
             
-            // Apply styles to call/backup indicators
-            const callIndicators = table.querySelectorAll('.call-indicator');
-            callIndicators.forEach(ci => {
-                const baseSize = 1.1;
-                const computedSize = baseSize * (0.7 + zoomFactor * 0.3);
-                ci.style.width = `${computedSize}rem`;
-                ci.style.height = `${computedSize}rem`;
-                ci.style.fontSize = `${0.5 * (0.8 + zoomFactor * 0.2)}rem`;
-            });
-            const backupIndicators = table.querySelectorAll('.backup-indicator');
-            backupIndicators.forEach(bi => {
-                const baseSize = 0.9;
-                const computedSize = baseSize * (0.7 + zoomFactor * 0.3);
-                bi.style.width = `${computedSize}rem`;
-                bi.style.height = `${computedSize}rem`;
-                bi.style.fontSize = `${0.45 * (0.8 + zoomFactor * 0.2)}rem`;
-            });
         }
 
         function attachIndicatorTooltipHandlers(container) {
@@ -1096,7 +1091,7 @@
                 mainScheduleHeaders.forEach((header, hIndex) => {
                     const td = document.createElement('td');
                     const cellContent = weekData[header] || '-'; // Default to '-' if empty
-                    let cellHtml = cellContent;
+                    let cellHtml = `<span class="cell-wrapper">${cellContent}`;
 
                     // Add call icon if this fellow is on call
                     const cellFellows = cellContent.split('&');
@@ -1133,6 +1128,7 @@
                             }
                         }
                     });
+                    cellHtml += '</span>'; // close cell-wrapper
                     
                     if (hIndex === 0) { // First column (Week)
                         td.innerHTML = `<span class="week-cell-content">${cellContent}</span>`; // Wrap week string
@@ -1258,7 +1254,7 @@
                 weekCell.style.position = 'sticky'; weekCell.style.left = '0'; weekCell.style.zIndex = '5';
                 row.appendChild(weekCell);
 
-                let rotationCellContent = assignment.rotation; 
+                let rotationCellContent = `<span class="cell-wrapper">${assignment.rotation}`;
                 
                 const callInfoForWeek = callScheduleMap[weekString];
                 if (callInfoForWeek && fellowInitial === callInfoForWeek.fellow) {
@@ -1285,10 +1281,11 @@
                 if (fellowInitial === 'MD' && weekString === mdLastAssignmentWeekString && assignment.displayRotation.includes('MD')) {
                      rotationCellContent += ` <span class="asterisk-note">**</span>`;
                 }
-                if (fellowInitial === 'AM' && weekString === amLastAssignmentWeekString && assignment.displayRotation.includes('AM')) { 
+                if (fellowInitial === 'AM' && weekString === amLastAssignmentWeekString && assignment.displayRotation.includes('AM')) {
                      rotationCellContent += ` <span class="asterisk-note">**</span>`;
                 }
 
+                rotationCellContent += '</span>';
 
                 const rotationCell = document.createElement('td');
                 rotationCell.innerHTML = rotationCellContent;
