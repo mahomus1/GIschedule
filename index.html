@@ -240,7 +240,7 @@
             top: -0.35em;
             right: -0.35em;
             background: #64748b;
-            color: #ffffff;
+            color: #000000; /* Improved contrast */
         }
         .indicator-tooltip {
             position: absolute;
@@ -438,7 +438,7 @@
                             <label for="zoom-slider">Zoom Table:</label> <input type="range" id="zoom-slider" min="0.3" max="1.0" value="1" step="0.05"> <span id="zoom-value">100%</span> </div>
                          <div class="legend-button-wrapper">
                             <button id="legend-toggle-btn">Legend ℹ️</button>
-                            <div id="legend-popover" class="hidden absolute mt-1"> <p><span class="legend-symbol"><span class="call-indicator legend-indicator">C</span></span> = On Call</p>
+                            <div id="legend-popover" class="hidden absolute mt-1"> <p><span class="legend-symbol"><span class="call-indicator legend-indicator">C</span></span> = On Call <small>(hover for dates)</small></p>
                                 <p><span class="legend-symbol"><span class="backup-indicator legend-indicator">B</span></span> = Backup Call <small>(hover for dates)</small></p>
                                 <p class="mt-1"><em>Note: Call starts Friday 4:30 PM of the preceding week and ends Friday morning of the listed week.</em></p>
                                 <hr class="my-2">
