@@ -216,6 +216,7 @@
             font-weight: 600;
             cursor: help;
             display: inline-block;
+            position: relative;
         }
 
         .initials-backup {
@@ -226,6 +227,7 @@
             font-weight: 600;
             cursor: help;
             display: inline-block;
+            position: relative;
         }
 
         .initials-both {
@@ -237,6 +239,7 @@
             cursor: help;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
             display: inline-block;
+            position: relative;
         }
 
         .badge-tooltip {
@@ -267,9 +270,11 @@
         .initials-call:hover .badge-tooltip,
         .initials-backup:hover .badge-tooltip,
         .initials-both:hover .badge-tooltip,
+        .holiday-indicator:hover .badge-tooltip,
         .initials-call.show-tooltip .badge-tooltip,
         .initials-backup.show-tooltip .badge-tooltip,
-        .initials-both.show-tooltip .badge-tooltip {
+        .initials-both.show-tooltip .badge-tooltip,
+        .holiday-indicator.show-tooltip .badge-tooltip {
             opacity: 1;
             bottom: 140%;
         }
@@ -321,6 +326,8 @@
             font-size: 0.9em; /* Slightly smaller than main cell text */
             white-space: normal; /* Allow holiday text to wrap */
             line-height: 1.1;
+            position: relative;
+            cursor: help;
         }
         .holiday-indicator .emoji { /* Style for the emoji part */
             font-size: 1em; /* Relative to parent .holiday-indicator */
@@ -983,8 +990,8 @@
             // Special handling for Christmas 2025 if it's in the "12/22-12-26" week
             if (weekString === "12/22-12-26") {
                 const christmasHoliday2025 = holidays.find(h => h.name === "Christmas" && h.date.getFullYear() === 2025);
-                if (christmasHoliday2025) { 
-                    indicatorsHtml += `<span class="holiday-indicator" title="${christmasHoliday2025.name}"><span class="emoji">${christmasHoliday2025.indicator}</span> <span class="date-text">${monthNames[christmasHoliday2025.date.getMonth()]} ${christmasHoliday2025.date.getDate()}</span></span>`;
+                if (christmasHoliday2025) {
+                    indicatorsHtml += `<span class="holiday-indicator"><span class="emoji">${christmasHoliday2025.indicator}</span> <span class="date-text">${monthNames[christmasHoliday2025.date.getMonth()]} ${christmasHoliday2025.date.getDate()}</span><span class="badge-tooltip">${christmasHoliday2025.indicator} ${christmasHoliday2025.name}</span></span>`;
                     processedHolidayKeysInThisCall.add(christmasHoliday2025.name + "_2025"); // Mark as processed
                 }
             }
@@ -1038,7 +1045,7 @@
                 }
 
                 if (displayHoliday) {
-                    indicatorsHtml += `<span class="holiday-indicator" title="${holiday.name}"><span class="emoji">${holiday.indicator}</span> <span class="date-text">${holidayDateText}</span></span>`;
+                    indicatorsHtml += `<span class="holiday-indicator"><span class="emoji">${holiday.indicator}</span> <span class="date-text">${holidayDateText}</span><span class="badge-tooltip">${holiday.indicator} ${holiday.name}</span></span>`;
                     processedHolidayKeysInThisCall.add(holidayKey);
                 }
             });
@@ -1408,6 +1415,30 @@
                 .forEach(el => el.classList.remove('show-tooltip'));
         }
 
+        /**
+         * Handles click or touch events on holiday indicators to toggle tooltip visibility.
+         * Utilizes event delegation on the schedule display container.
+         * @param {Event} event - The click or touch event.
+         */
+        function handleHolidayTooltipToggle(event) {
+            const indicator = event.target.closest('.holiday-indicator');
+            if (!indicator) return;
+
+            event.stopPropagation();
+            const wasShown = indicator.classList.contains('show-tooltip');
+            document.querySelectorAll('.holiday-indicator.show-tooltip')
+                .forEach(el => el.classList.remove('show-tooltip'));
+            if (!wasShown) indicator.classList.add('show-tooltip');
+        }
+
+        /**
+         * Hides all visible holiday tooltips.
+         */
+        function hideAllHolidayTooltips() {
+            document.querySelectorAll('.holiday-indicator.show-tooltip')
+                .forEach(el => el.classList.remove('show-tooltip'));
+        }
+
         // Event listener for ICS export button
         exportIcsBtn.addEventListener('click', () => {
             const selectedFellowInitial = fellowSelect.value;
@@ -1543,10 +1574,14 @@
             populateFellowButtons();
             ['click','touchstart'].forEach(evt => {
                 scheduleDisplayContainer.addEventListener(evt, handleCallBadgeToggle);
+                scheduleDisplayContainer.addEventListener(evt, handleHolidayTooltipToggle);
             });
             document.addEventListener('click', (event) => {
                 if (!event.target.closest('.initials-call, .initials-backup, .initials-both')) {
                     hideAllCallBadges();
+                }
+                if (!event.target.closest('.holiday-indicator')) {
+                    hideAllHolidayTooltips();
                 }
             });
             renderFullSchedule(parsedMainSchedule, true); // Initial render, scroll to current week
