@@ -267,14 +267,16 @@
             border: 3px solid transparent;
             border-top-color: rgba(15, 15, 15, 0.95);
         }
-        .initials-call:hover .badge-tooltip,
-        .initials-backup:hover .badge-tooltip,
-        .initials-both:hover .badge-tooltip,
-        .holiday-indicator:hover .badge-tooltip,
-        .initials-call.show-tooltip .badge-tooltip,
-        .initials-backup.show-tooltip .badge-tooltip,
-        .initials-both.show-tooltip .badge-tooltip,
-        .holiday-indicator.show-tooltip .badge-tooltip {
+.initials-call:hover .badge-tooltip,
+.initials-backup:hover .badge-tooltip,
+.initials-both:hover .badge-tooltip,
+.holiday-indicator:hover .badge-tooltip,
+.holiday-badge:hover .badge-tooltip,
+.initials-call.show-tooltip .badge-tooltip,
+.initials-backup.show-tooltip .badge-tooltip,
+.initials-both.show-tooltip .badge-tooltip,
+.holiday-indicator.show-tooltip .badge-tooltip,
+.holiday-badge.show-tooltip .badge-tooltip {
             opacity: 1;
             bottom: 140%;
         }
@@ -303,6 +305,7 @@
             font-weight: 700;
             vertical-align: super;
             cursor: help;
+            position: relative;
         }
 
         .weekend-badge {
@@ -1133,15 +1136,14 @@
                     let cellHtml = decoratedFellows.join('&');
                     
                     // Add indicators for holiday coverage and last weekend call
+                    const holidayNamesForCell = new Set();
                     cellFellows.forEach(cf => {
                         if (ALL_FELLOWS.includes(cf)) {
                             specificHolidayCoverage.forEach(coverage => {
                                 if (coverage.fellow === cf &&
                                     coverage.date >= weekData.fullStartDate &&
                                     coverage.date <= weekData.fullEndDate) {
-                                    if (!cellHtml.includes('holiday-badge')) {
-                                        cellHtml += ` <span class="holiday-badge">H</span>`;
-                                    }
+                                    holidayNamesForCell.add(coverage.holidayName);
                                 }
                             });
                             if (cf === 'MD' && weekString === mdLastAssignmentWeekString) {
@@ -1152,6 +1154,10 @@
                             }
                         }
                     });
+                    if (holidayNamesForCell.size > 0) {
+                        const holidayStr = Array.from(holidayNamesForCell).join(', ');
+                        cellHtml += ` <span class="holiday-badge">H<span class="badge-tooltip">${holidayStr}</span></span>`;
+                    }
                     
                     if (hIndex === 0) { // First column (Week)
                         td.innerHTML = `<span class="week-cell-content">${cellContent}</span>`; // Wrap week string
@@ -1291,17 +1297,18 @@
                     rotationCellContent += ` <span class="initials-backup">${fellowInitial}<span class="badge-tooltip">Backup: ${backupCallInfoForWeek.callRange}</span></span>`;
                 }
                 
-                let hasSpecificHolidayCoverage = false;
+                const holidayNames = [];
                 specificHolidayCoverage.forEach(coverage => {
-                    if (coverage.fellow === fellowInitial && 
-                        assignment.displayRotation.includes(fellowInitial) && 
-                        coverage.date >= assignment.fullStartDate && 
+                    if (coverage.fellow === fellowInitial &&
+                        assignment.displayRotation.includes(fellowInitial) &&
+                        coverage.date >= assignment.fullStartDate &&
                         coverage.date <= assignment.fullEndDate) {
-                        hasSpecificHolidayCoverage = true;
+                        holidayNames.push(coverage.holidayName);
                     }
                 });
-                if (hasSpecificHolidayCoverage) {
-                    rotationCellContent += ` <span class="holiday-badge">H</span>`;
+                if (holidayNames.length > 0) {
+                    const uniqueHolidayStr = Array.from(new Set(holidayNames)).join(', ');
+                    rotationCellContent += ` <span class="holiday-badge">H<span class="badge-tooltip">${uniqueHolidayStr}</span></span>`;
                 }
 
                 if (fellowInitial === 'MD' && weekString === mdLastAssignmentWeekString && assignment.displayRotation.includes('MD')) {
@@ -1421,12 +1428,12 @@
          * @param {Event} event - The click or touch event.
          */
         function handleHolidayTooltipToggle(event) {
-            const indicator = event.target.closest('.holiday-indicator');
+            const indicator = event.target.closest('.holiday-indicator, .holiday-badge');
             if (!indicator) return;
 
             event.stopPropagation();
             const wasShown = indicator.classList.contains('show-tooltip');
-            document.querySelectorAll('.holiday-indicator.show-tooltip')
+            document.querySelectorAll('.holiday-indicator.show-tooltip, .holiday-badge.show-tooltip')
                 .forEach(el => el.classList.remove('show-tooltip'));
             if (!wasShown) indicator.classList.add('show-tooltip');
         }
@@ -1435,7 +1442,7 @@
          * Hides all visible holiday tooltips.
          */
         function hideAllHolidayTooltips() {
-            document.querySelectorAll('.holiday-indicator.show-tooltip')
+            document.querySelectorAll('.holiday-indicator.show-tooltip, .holiday-badge.show-tooltip')
                 .forEach(el => el.classList.remove('show-tooltip'));
         }
 
@@ -1580,7 +1587,7 @@
                 if (!event.target.closest('.initials-call, .initials-backup, .initials-both')) {
                     hideAllCallBadges();
                 }
-                if (!event.target.closest('.holiday-indicator')) {
+                if (!event.target.closest('.holiday-indicator, .holiday-badge')) {
                     hideAllHolidayTooltips();
                 }
             });
