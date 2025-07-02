@@ -1624,6 +1624,9 @@
             callScheduleMap = parseCallScheduleCSV(callScheduleCsvData);
             backupCallScheduleMap = parseCallScheduleCSV(backupCallScheduleCsvData);
             lastCallRangeByFellow = computeLastCallRanges(callScheduleMap);
+            // Override last weekend call range for MD and AM
+            lastCallRangeByFellow['MD'] = '6/27-6/28';
+            lastCallRangeByFellow['AM'] = '6/27-6/28';
             populateFellowDropdown();
             populateFellowButtons();
             ['click','touchstart'].forEach(evt => {
