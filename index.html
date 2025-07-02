@@ -272,11 +272,13 @@
 .initials-both:hover .badge-tooltip,
 .holiday-indicator:hover .badge-tooltip,
 .holiday-badge:hover .badge-tooltip,
+.weekend-badge:hover .badge-tooltip,
 .initials-call.show-tooltip .badge-tooltip,
 .initials-backup.show-tooltip .badge-tooltip,
 .initials-both.show-tooltip .badge-tooltip,
 .holiday-indicator.show-tooltip .badge-tooltip,
-.holiday-badge.show-tooltip .badge-tooltip {
+.holiday-badge.show-tooltip .badge-tooltip,
+.weekend-badge.show-tooltip .badge-tooltip {
             opacity: 1;
             bottom: 140%;
         }
@@ -319,6 +321,7 @@
             font-weight: 700;
             vertical-align: super;
             cursor: help;
+            position: relative;
         }
         
         /* Holiday indicator styles */
@@ -616,7 +619,8 @@
         let mainScheduleHeaders = [];
         let callScheduleMap = {};
         let backupCallScheduleMap = {};
-        let activeHighlights = new Set(); 
+        let lastCallRangeByFellow = {};
+        let activeHighlights = new Set();
         let currentZoomLevel; 
         let mdLastAssignmentWeekString = null; // Stores the week string for MD's last assignment
         let amLastAssignmentWeekString = null; // Stores the week string for AM's last assignment
@@ -838,6 +842,19 @@
                 }
             }
             return map;
+        }
+
+        /**
+         * Computes the last call range for each fellow based on the parsed call schedule map.
+         * @param {Object} scheduleMap - Map of week ranges to call info.
+         * @returns {Object} A map of fellow initials to their last call range string.
+         */
+        function computeLastCallRanges(scheduleMap) {
+            const lastRanges = {};
+            Object.values(scheduleMap).forEach(info => {
+                lastRanges[info.fellow] = info.callRange;
+            });
+            return lastRanges;
         }
 
 
@@ -1148,10 +1165,12 @@
                                 }
                             });
                             if (cf === 'MD' && weekString === mdLastAssignmentWeekString) {
-                                cellHtml += ` <span class="weekend-badge">W</span>`;
+                                const range = lastCallRangeByFellow['MD'] || '';
+                                cellHtml += ` <span class="weekend-badge">W<span class="badge-tooltip">Last Weekend Call: ${range}</span></span>`;
                             }
                             if (cf === 'AM' && weekString === amLastAssignmentWeekString) {
-                                cellHtml += ` <span class="weekend-badge">W</span>`;
+                                const range = lastCallRangeByFellow['AM'] || '';
+                                cellHtml += ` <span class="weekend-badge">W<span class="badge-tooltip">Last Weekend Call: ${range}</span></span>`;
                             }
                         }
                     });
@@ -1313,10 +1332,12 @@
                 }
 
                 if (fellowInitial === 'MD' && weekString === mdLastAssignmentWeekString && assignment.displayRotation.includes('MD')) {
-                     rotationCellContent += ` <span class="weekend-badge">W</span>`;
+                     const range = lastCallRangeByFellow['MD'] || '';
+                     rotationCellContent += ` <span class="weekend-badge">W<span class="badge-tooltip">Last Weekend Call: ${range}</span></span>`;
                 }
                 if (fellowInitial === 'AM' && weekString === amLastAssignmentWeekString && assignment.displayRotation.includes('AM')) {
-                     rotationCellContent += ` <span class="weekend-badge">W</span>`;
+                     const range = lastCallRangeByFellow['AM'] || '';
+                     rotationCellContent += ` <span class="weekend-badge">W<span class="badge-tooltip">Last Weekend Call: ${range}</span></span>`;
                 }
 
 
@@ -1444,6 +1465,30 @@
          */
         function hideAllHolidayTooltips() {
             document.querySelectorAll('.holiday-indicator.show-tooltip, .holiday-badge.show-tooltip')
+                .forEach(el => el.classList.remove('show-tooltip'));
+        }
+
+        /**
+         * Handles click or touch events on weekend badges to toggle tooltip visibility.
+         * Utilizes event delegation on the schedule display container.
+         * @param {Event} event - The click or touch event.
+         */
+        function handleWeekendTooltipToggle(event) {
+            const badge = event.target.closest('.weekend-badge');
+            if (!badge) return;
+
+            event.stopPropagation();
+            const wasShown = badge.classList.contains('show-tooltip');
+            document.querySelectorAll('.weekend-badge.show-tooltip')
+                .forEach(el => el.classList.remove('show-tooltip'));
+            if (!wasShown) badge.classList.add('show-tooltip');
+        }
+
+        /**
+         * Hides all visible weekend tooltips.
+         */
+        function hideAllWeekendTooltips() {
+            document.querySelectorAll('.weekend-badge.show-tooltip')
                 .forEach(el => el.classList.remove('show-tooltip'));
         }
 
@@ -1578,11 +1623,13 @@
             parsedMainSchedule = parseMainScheduleCSV(mainScheduleCsvData);
             callScheduleMap = parseCallScheduleCSV(callScheduleCsvData);
             backupCallScheduleMap = parseCallScheduleCSV(backupCallScheduleCsvData);
+            lastCallRangeByFellow = computeLastCallRanges(callScheduleMap);
             populateFellowDropdown();
             populateFellowButtons();
             ['click','touchstart'].forEach(evt => {
                 scheduleDisplayContainer.addEventListener(evt, handleCallBadgeToggle);
                 scheduleDisplayContainer.addEventListener(evt, handleHolidayTooltipToggle);
+                scheduleDisplayContainer.addEventListener(evt, handleWeekendTooltipToggle);
             });
             document.addEventListener('click', (event) => {
                 if (!event.target.closest('.initials-call, .initials-backup, .initials-both')) {
@@ -1590,6 +1637,9 @@
                 }
                 if (!event.target.closest('.holiday-indicator, .holiday-badge')) {
                     hideAllHolidayTooltips();
+                }
+                if (!event.target.closest('.weekend-badge')) {
+                    hideAllWeekendTooltips();
                 }
             });
             renderFullSchedule(parsedMainSchedule, true); // Initial render, scroll to current week
