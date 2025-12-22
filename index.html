@@ -1169,31 +1169,26 @@
                 mainScheduleHeaders.forEach((header, hIndex) => {
                     const td = document.createElement('td');
                     const cellContent = weekData[header] || '-'; // Default to '-' if empty
-                    const cellFellowTokens = cellContent
-                        .split('&')
+                    const cellFellows = (cellContent.match(/[A-Z]{2,3}/g) || [])
                         .map(cf => cf.trim())
-                        .filter(cf => cf.length > 0);
-                    const cellFellows = cellFellowTokens
-                        .flatMap(cf => cf.match(/[A-Z]{2,3}/g) || [])
                         .filter(cf => ALL_FELLOWS.includes(cf));
-                    let decoratedFellows = cellFellowTokens.map(cf => {
+
+                    let cellHtml = cellContent;
+                    cellFellows.forEach(cf => {
                         let decorated = cf;
-                        if (ALL_FELLOWS.includes(cf)) {
-                            const isCall = cf === fellowOnCallThisWeek;
-                            const isBackup = cf === fellowOnBackupCallThisWeek;
-                            const callRangeStr = callInfo ? callInfo.callRange : '';
-                            const backupRangeStr = backupCallInfo ? backupCallInfo.callRange : '';
-                            if (isCall && isBackup) {
-                                decorated = `<span class="initials-both">${cf}<span class="badge-tooltip">On Call + Backup: ${callRangeStr}</span></span>`;
-                            } else if (isCall) {
-                                decorated = `<span class="initials-call">${cf}<span class="badge-tooltip">On Call: ${callRangeStr}</span></span>`;
-                            } else if (isBackup) {
-                                decorated = `<span class="initials-backup">${cf}<span class="badge-tooltip">Backup: ${backupRangeStr}</span></span>`;
-                            }
+                        const isCall = cf === fellowOnCallThisWeek;
+                        const isBackup = cf === fellowOnBackupCallThisWeek;
+                        const callRangeStr = callInfo ? callInfo.callRange : '';
+                        const backupRangeStr = backupCallInfo ? backupCallInfo.callRange : '';
+                        if (isCall && isBackup) {
+                            decorated = `<span class="initials-both">${cf}<span class="badge-tooltip">On Call + Backup: ${callRangeStr}</span></span>`;
+                        } else if (isCall) {
+                            decorated = `<span class="initials-call">${cf}<span class="badge-tooltip">On Call: ${callRangeStr}</span></span>`;
+                        } else if (isBackup) {
+                            decorated = `<span class="initials-backup">${cf}<span class="badge-tooltip">Backup: ${backupRangeStr}</span></span>`;
                         }
-                        return decorated;
+                        cellHtml = cellHtml.replace(new RegExp(`\\b${cf}\\b`, 'g'), decorated);
                     });
-                    let cellHtml = decoratedFellows.join('&');
                     
                     // Add indicators for holiday coverage and last weekend call
                     const holidayNamesForCell = new Set();
