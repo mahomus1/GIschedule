@@ -13,22 +13,72 @@
             --mizzou-gray: #f8f8f8;
             --mizzou-gray-row: #f2f2f2;
             --mizzou-hover-gold: #FFF8E1;
+            --holiday-emerald: #0f766e;
+            --holiday-crimson: #b91c1c;
+            --holiday-ice: #f1f5f9;
         }
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--mizzou-gray);
+            background-color: var(--holiday-ice);
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(15, 118, 110, 0.07) 0, rgba(15, 118, 110, 0) 18%),
+                radial-gradient(circle at 80% 10%, rgba(185, 28, 28, 0.08) 0, rgba(185, 28, 28, 0) 22%),
+                linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(247, 250, 255, 0.9));
+            background-attachment: fixed;
         }
         .mizzou-header {
-            background-color: var(--mizzou-black);
+            background: linear-gradient(135deg, var(--mizzou-black), #111827);
             color: var(--mizzou-gold);
-            padding: 1rem;
-            border-radius: 0.5rem;
+            padding: 1.25rem;
+            border-radius: 0.75rem;
             margin-bottom: 1.5rem;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+        }
+        .mizzou-header::before,
+        .mizzou-header::after {
+            content: '';
+            position: absolute;
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
+            filter: blur(6px);
+            opacity: 0.65;
+        }
+        .mizzou-header::before {
+            top: -50px;
+            left: -30px;
+        }
+        .mizzou-header::after {
+            bottom: -60px;
+            right: -20px;
         }
         .mizzou-header h1,
         .mizzou-header p {
             color: var(--mizzou-gold);
+        }
+        .seasonal-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            background: linear-gradient(120deg, rgba(15, 118, 110, 0.9), rgba(185, 28, 28, 0.9));
+            color: white;
+            padding: 0.35rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        }
+        .seasonal-tag .twinkle {
+            display: inline-block;
+            animation: twinkle 2.4s ease-in-out infinite;
+        }
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.5; transform: scale(0.9) rotate(0deg); }
+            50% { opacity: 1; transform: scale(1.1) rotate(8deg); }
         }
         .mizzou-footer {
             background-color: var(--mizzou-black);
@@ -115,10 +165,11 @@
              margin-bottom: 1.5rem; /* mb-6 */
         }
         .controls {
-            background-color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.92);
             padding: 1rem; /* p-4 */
             border-radius: 0.5rem; /* rounded-lg */
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
+            box-shadow: 0 8px 20px -6px rgba(15, 23, 42, 0.25), 0 2px 8px -2px rgba(15, 23, 42, 0.15); /* shadow-md */
+            border: 1px solid rgba(15, 118, 110, 0.08);
         }
         @media (min-width: 640px) { /* sm breakpoint */
             .controls { padding: 1.5rem; } /* p-6 for larger screens */
@@ -169,7 +220,7 @@
             transition: background-color 0.2s, box-shadow 0.2s, padding 0.2s, font-size 0.2s; /* Added padding and font-size for zoom */
             font-size: 0.875rem;
         }
-        .fellow-btn:hover, .action-btn:hover { background-color: #e0a106; }
+        .fellow-btn:hover, .action-btn:hover { background-color: #e0a106; box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.18); }
         .fellow-btn.active {
             background-color: var(--mizzou-black); /* Mizzou Black Active */
             color: var(--mizzou-gold);
@@ -459,6 +510,11 @@
             <img src="https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/svg/E313.svg" alt="GI Logo" class="w-24 h-24 mb-2">
             <h1 class="text-3xl sm:text-4xl font-bold">Fellows Schedule</h1>
             <p>Mizzou Division of Gastroenterology &amp; Hepatology</p>
+            <div class="seasonal-tag" aria-label="Seasonal styling note">
+                <span class="twinkle">❄️</span>
+                <span>Seasonal refresh for December coverage</span>
+                <span class="twinkle">🎄</span>
+            </div>
         </header>
 
         <div class="controls-wrapper"> <div class="controls">
