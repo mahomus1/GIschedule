@@ -718,21 +718,55 @@
 
 
         /**
+         * Splits a single CSV line into fields, respecting quoted values that may contain commas.
+         * @param {string} line - A single CSV line.
+         * @returns {string[]} Parsed fields with quotes removed.
+         */
+        function parseCsvLine(line) {
+            const fields = [];
+            let current = '';
+            let inQuotes = false;
+
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+
+                if (char === '"') {
+                    const nextChar = line[i + 1];
+                    if (inQuotes && nextChar === '"') {
+                        // Escaped quote inside a quoted field
+                        current += '"';
+                        i++; // Skip the escaped quote
+                    } else {
+                        inQuotes = !inQuotes;
+                    }
+                } else if (char === ',' && !inQuotes) {
+                    fields.push(current);
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            fields.push(current);
+
+            return fields.map(f => f.trim());
+        }
+
+        /**
          * Parses the main schedule CSV data string into an array of objects.
          * Also discovers all unique fellow initials from the data.
          * @param {string} data - The CSV data as a string.
          * @returns {Array<Object>} An array of schedule row objects.
          */
         function parseMainScheduleCSV(data) {
-            const lines = data.trim().split('\n');
+            const lines = data.trim().split(/\r?\n/);
             if (lines.length === 0) {
                 mainScheduleHeaders = [];
                 return [];
             }
-            mainScheduleHeaders = lines[0].split(',').map(h => h.trim());
+            mainScheduleHeaders = parseCsvLine(lines[0]);
             let yearContext = 2025; // Initial year context for parsing week dates
             const schedule = lines.slice(1).map(line => {
-                const values = line.split(',');
+                const values = parseCsvLine(line);
                 const rowData = {};
                 mainScheduleHeaders.forEach((header, index) => {
                      rowData[header] = (values[index] || '').trim();
@@ -810,13 +844,13 @@
          */
         function parseCallScheduleCSV(data) {
             const map = {};
-            const lines = data.trim().split('\n');
+            const lines = data.trim().split(/\r?\n/);
             const startIndex = lines[0].toLowerCase().includes('week') ? 1 : 0;
             let yearContext = 2025;
             for (let i = startIndex; i < lines.length; i++) {
                 const line = lines[i].trim();
                 if (!line) continue;
-                const parts = line.split(',');
+                const parts = parseCsvLine(line);
                 if (parts.length === 2) {
                     const weekRange = parts[0].trim();
                     const fellow = parts[1].trim();
