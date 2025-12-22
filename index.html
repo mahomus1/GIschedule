@@ -1276,6 +1276,7 @@
 
             let dataToRender = scheduleData;
             let currentWeekRowElementForScroll = null; // To scroll to this row
+            let nextUpcomingWeekRowForScroll = null; // Fallback scroll target if current week is not present
 
             // No longer hiding previous weeks, so dataToRender is always the full scheduleData
             // The current week highlighting logic will find the current week within the full list.
@@ -1302,12 +1303,14 @@
                 const weekString = weekData['Week'];
                 
                 // Highlight current week - this logic finds the current week within the full displayed schedule
-                const monthDayRange = getWeekMonthDayRange(weekString); 
-                if (isDateInWeekRange(CURRENT_SIMULATED_MONTH_DAY.month, CURRENT_SIMULATED_MONTH_DAY.day, monthDayRange)) {
+                const isCurrentWeek = ACTUAL_CURRENT_DATE >= weekData.fullStartDate && ACTUAL_CURRENT_DATE <= weekData.fullEndDate;
+                if (isCurrentWeek) {
                     row.classList.add('current-week-highlight');
-                    if (!currentWeekRowElementForScroll) { 
-                       currentWeekRowElementForScroll = row;
+                    if (!currentWeekRowElementForScroll) {
+                        currentWeekRowElementForScroll = row;
                     }
+                } else if (!currentWeekRowElementForScroll && !nextUpcomingWeekRowForScroll && ACTUAL_CURRENT_DATE < weekData.fullStartDate) {
+                    nextUpcomingWeekRowForScroll = row;
                 }
 
 
@@ -1392,8 +1395,11 @@
 
             applyZoomStyles(currentZoomLevel);
 
-            if (shouldScroll && currentWeekRowElementForScroll) {
-                attemptScrollToElement(currentWeekRowElementForScroll);
+            if (shouldScroll) {
+                const rowToScroll = currentWeekRowElementForScroll || nextUpcomingWeekRowForScroll || tbody.firstChild;
+                if (rowToScroll) {
+                    attemptScrollToElement(rowToScroll);
+                }
             }
         }
         
@@ -1463,18 +1469,21 @@
             thead.appendChild(headerRow);
             table.appendChild(thead);
             let currentWeekRowElementForHighlight = null;
+            let nextUpcomingWeekRowForScroll = null;
 
             assignmentsToDisplay.forEach((assignment, index) => { 
                 const row = document.createElement('tr');
                 const weekString = assignment.week;
                 
                 // Highlight current assignment
-                const monthDayRange = getWeekMonthDayRange(weekString);
-                if (isDateInWeekRange(CURRENT_SIMULATED_MONTH_DAY.month, CURRENT_SIMULATED_MONTH_DAY.day, monthDayRange)) {
+                const isCurrentWeek = ACTUAL_CURRENT_DATE >= assignment.fullStartDate && ACTUAL_CURRENT_DATE <= assignment.fullEndDate;
+                if (isCurrentWeek) {
                     row.classList.add('current-week-highlight');
                     if (!currentWeekRowElementForHighlight) {
                         currentWeekRowElementForHighlight = row;
                     }
+                } else if (!currentWeekRowElementForHighlight && !nextUpcomingWeekRowForScroll && ACTUAL_CURRENT_DATE < assignment.fullStartDate) {
+                    nextUpcomingWeekRowForScroll = row;
                 }
                 
                 const weekCell = document.createElement('td');
@@ -1538,8 +1547,11 @@
 
             applyZoomStyles(currentZoomLevel);
 
-            if (shouldScroll && currentWeekRowElementForHighlight) {
-                 attemptScrollToElement(currentWeekRowElementForHighlight);
+            if (shouldScroll) {
+                const rowToScroll = currentWeekRowElementForHighlight || nextUpcomingWeekRowForScroll || tbody.firstChild;
+                if (rowToScroll) {
+                    attemptScrollToElement(rowToScroll);
+                }
             }
         }
 
