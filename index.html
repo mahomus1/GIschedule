@@ -1169,9 +1169,14 @@
                 mainScheduleHeaders.forEach((header, hIndex) => {
                     const td = document.createElement('td');
                     const cellContent = weekData[header] || '-'; // Default to '-' if empty
-                    const cellFellows = cellContent.split('&');
-                    let decoratedFellows = cellFellows.map(cfRaw => {
-                        const cf = cfRaw.trim();
+                    const cellFellowTokens = cellContent
+                        .split('&')
+                        .map(cf => cf.trim())
+                        .filter(cf => cf.length > 0);
+                    const cellFellows = cellFellowTokens
+                        .flatMap(cf => cf.match(/[A-Z]{2,3}/g) || [])
+                        .filter(cf => ALL_FELLOWS.includes(cf));
+                    let decoratedFellows = cellFellowTokens.map(cf => {
                         let decorated = cf;
                         if (ALL_FELLOWS.includes(cf)) {
                             const isCall = cf === fellowOnCallThisWeek;
