@@ -7,6 +7,16 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {
+            /* Christmas colors */
+            --christmas-red: #c41e3a;
+            --christmas-red-dark: #a01830;
+            --christmas-green: #165b33;
+            --christmas-green-light: #1e7b46;
+            --christmas-gold: #d4af37;
+            --christmas-white: #fffafa;
+            --christmas-cream: #f5f0e1;
+            --christmas-silver: #c0c0c0;
+            /* Legacy variables retained for compatibility */
             --mizzou-black: #000000;
             --mizzou-gold: #FFB612;
             --mizzou-gold-dark: #C99700;
@@ -16,27 +26,62 @@
         }
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--mizzou-gray);
+            background: linear-gradient(180deg, var(--christmas-cream) 0%, #e8e0d0 100%);
         }
         .mizzou-header {
-            background-color: var(--mizzou-black);
-            color: var(--mizzou-gold);
+            background: linear-gradient(135deg, var(--christmas-red) 0%, var(--christmas-red-dark) 100%);
+            color: var(--christmas-white);
             padding: 1rem;
             border-radius: 0.5rem;
             margin-bottom: 1.5rem;
             text-align: center;
+            border: 3px solid var(--christmas-gold);
+            box-shadow: 0 4px 20px rgba(196, 30, 58, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        /* Add subtle snowflake pattern */
+        .mizzou-header::before {
+            content: "❄";
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            font-size: 2rem;
+            opacity: 0.3;
+        }
+        .mizzou-header::after {
+            content: "❄";
+            position: absolute;
+            bottom: 10px;
+            right: 20px;
+            font-size: 2rem;
+            opacity: 0.3;
         }
         .mizzou-header h1,
         .mizzou-header p {
-            color: var(--mizzou-gold);
+            color: var(--christmas-white);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
         }
         .mizzou-footer {
-            background-color: var(--mizzou-black);
-            color: var(--mizzou-gold);
+            background: linear-gradient(135deg, var(--christmas-green) 0%, var(--christmas-green-light) 100%);
+            color: var(--christmas-white);
             padding: 1rem;
             border-radius: 0.5rem;
             margin-top: 2rem;
             text-align: center;
+            border: 2px solid var(--christmas-gold);
+            border-top: 3px solid var(--christmas-gold);
+            position: relative;
+        }
+        /* Add decorative holly */
+        .mizzou-footer::before {
+            content: "🎄";
+            margin-right: 10px;
+        }
+
+        .mizzou-footer::after {
+            content: "🎄";
+            margin-left: 10px;
         }
         .table-wrapper { /* Added to allow horizontal scroll on smaller screens if table is too wide */
             width: 100%;
@@ -45,9 +90,9 @@
         .table-container {
             max-height: 70vh;
             overflow: auto; /* Ensures both vertical and horizontal scroll if needed */
-            border: 1px solid #d1d5db; /* gray-300 */
+            border: 2px solid var(--christmas-green);
             border-radius: 0.5rem; /* rounded-lg */
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
+            box-shadow: 0 4px 15px rgba(22, 91, 51, 0.2);
             transform-origin: top left; /* For zoom */
             transition: transform 0.2s ease-out, width 0.2s ease-out, max-height 0.2s ease-out; /* For zoom */
         }
@@ -76,23 +121,23 @@
         }
 
         th {
-            background-color: var(--mizzou-black);
-            color: var(--mizzou-gold);
+            background: linear-gradient(135deg, var(--christmas-green) 0%, var(--christmas-green-light) 100%);
+            color: var(--christmas-white);
             font-weight: 600; /* semibold */
             position: sticky;
             top: 0;
             z-index: 10;
         }
-        tr:nth-child(even) { background-color: var(--mizzou-gray-row); } /* Mizzou Light Gray */
-        tr:nth-child(odd) { background-color: #ffffff; } /* Mizzou White */
-        tr:hover { background-color: var(--mizzou-hover-gold); } /* Mizzou Hover Gold */
+        tr:nth-child(odd) { background-color: var(--christmas-white); }
+        tr:nth-child(even) { background-color: rgba(22, 91, 51, 0.05); }
+        tr:hover { background-color: rgba(212, 175, 55, 0.15); }
 
         /* Sticky first column (Week) */
         thead th:first-child {
             position: sticky;
             left: 0;
             z-index: 12; /* Higher than other th cells, but lower than popovers */
-            background-color: var(--mizzou-black);
+            background: linear-gradient(135deg, var(--christmas-green) 0%, var(--christmas-green-light) 100%);
             white-space: normal; /* Allow week text to wrap if needed */
         }
         tbody td:first-child {
@@ -106,9 +151,9 @@
             transition: padding 0.2s ease-out, font-size 0.2s ease-out, min-width 0.2s ease-out;
         }
         /* Ensure sticky column background matches row background */
-        tr:nth-child(odd) td:first-child { background-color: #ffffff; } /* Mizzou White */
-        tr:nth-child(even) td:first-child { background-color: var(--mizzou-gray-row); } /* Mizzou Light Gray */
-        tr:hover td:first-child { background-color: var(--mizzou-hover-gold); } /* Mizzou Hover Gold on hover */
+        tr:nth-child(odd) td:first-child { background-color: var(--christmas-white); }
+        tr:nth-child(even) td:first-child { background-color: rgba(22, 91, 51, 0.05); }
+        tr:hover td:first-child { background-color: rgba(212, 175, 55, 0.15); }
 
         /* Controls styling */
         .controls-wrapper { /* Added wrapper for better spacing control */
@@ -163,17 +208,26 @@
         }
 
 
-        .fellow-btn, .action-btn { /* Mizzou color buttons */
-            background-color: var(--mizzou-gold); color: var(--mizzou-black); padding: 0.5rem 0.75rem;
-            border: none; border-radius: 0.375rem; cursor: pointer;
-            transition: background-color 0.2s, box-shadow 0.2s, padding 0.2s, font-size 0.2s; /* Added padding and font-size for zoom */
+        .fellow-btn, .action-btn {
+            background: linear-gradient(135deg, var(--christmas-red) 0%, var(--christmas-red-dark) 100%);
+            color: var(--christmas-white);
+            padding: 0.5rem 0.75rem;
+            border: 2px solid var(--christmas-gold);
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: background-color 0.2s, box-shadow 0.2s, padding 0.2s, font-size 0.2s, transform 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
             font-size: 0.875rem;
         }
-        .fellow-btn:hover, .action-btn:hover { background-color: #e0a106; }
+        .fellow-btn:hover, .action-btn:hover {
+            background: linear-gradient(135deg, #d42a48 0%, #b01f38 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(196, 30, 58, 0.3);
+        }
         .fellow-btn.active {
-            background-color: var(--mizzou-black); /* Mizzou Black Active */
-            color: var(--mizzou-gold);
-            box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px var(--mizzou-black); /* Ring effect */
+            background: linear-gradient(135deg, var(--christmas-green) 0%, var(--christmas-green-light) 100%);
+            color: var(--christmas-white);
+            box-shadow: 0 0 0 2px var(--christmas-gold), 0 0 0 4px var(--christmas-green);
         }
         .clear-highlights-btn {
             background-color: #ef5350; color: white; padding: 0.5rem 1rem;
@@ -204,23 +258,32 @@
         .highlight-md { background-color: #ef9a9a !important; } /* red-200 */
         
         /* Current week highlight */
-        .current-week-highlight td { background-color: var(--mizzou-hover-gold) !important; }
-        .current-week-highlight td:first-child { background-color: var(--mizzou-hover-gold) !important; }
+        .current-week-highlight td {
+            background: linear-gradient(90deg, rgba(212, 175, 55, 0.25) 0%, rgba(212, 175, 55, 0.1) 100%) !important;
+            border-top: 2px solid var(--christmas-gold);
+            border-bottom: 2px solid var(--christmas-gold);
+        }
+        .current-week-highlight td:first-child {
+            background: linear-gradient(90deg, rgba(212, 175, 55, 0.25) 0%, rgba(212, 175, 55, 0.1) 100%) !important;
+            border-left: 4px solid var(--christmas-red);
+        }
         
         /* New styles for call/backup badges */
         .initials-call {
-            background-color: #FFB612; /* Mizzou Gold */
-            color: #000000;
+            background: linear-gradient(135deg, var(--christmas-gold) 0%, #c9a227 100%);
+            color: #1a1a1a;
             padding: 1px 4px;
             border-radius: 3px;
             font-weight: 600;
             cursor: help;
             display: inline-block;
             position: relative;
+            border: 1px solid #b8960f;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
         }
 
         .initials-backup {
-            background-color: #4682B4; /* Steel Blue */
+            background: linear-gradient(135deg, var(--christmas-green) 0%, var(--christmas-green-light) 100%);
             color: white;
             padding: 1px 4px;
             border-radius: 3px;
@@ -228,10 +291,11 @@
             cursor: help;
             display: inline-block;
             position: relative;
+            border: 1px solid #0f4d2a;
         }
 
         .initials-both {
-            background: linear-gradient(135deg, #FFB612 50%, #4682B4 50%);
+            background: linear-gradient(135deg, var(--christmas-red) 50%, var(--christmas-green) 50%);
             color: white;
             padding: 1px 4px;
             border-radius: 3px;
@@ -240,6 +304,7 @@
             text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
             display: inline-block;
             position: relative;
+            border: 1px solid var(--christmas-gold);
         }
 
         .badge-tooltip {
@@ -298,7 +363,7 @@
         /* Badge styles for holiday and weekend indicators */
         .holiday-badge {
             display: inline-block;
-            background: #DC2626; /* Red */
+            background: linear-gradient(135deg, var(--christmas-red) 0%, var(--christmas-red-dark) 100%);
             color: white;
             font-size: 0.6em;
             padding: 0 3px;
@@ -308,11 +373,13 @@
             vertical-align: super;
             cursor: help;
             position: relative;
+            border: 1px solid var(--christmas-gold);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
         }
 
         .weekend-badge {
             display: inline-block;
-            background: #7C3AED; /* Purple */
+            background: linear-gradient(135deg, var(--christmas-green) 0%, var(--christmas-green-light) 100%);
             color: white;
             font-size: 0.6em;
             padding: 0 3px;
@@ -322,6 +389,7 @@
             vertical-align: super;
             cursor: help;
             position: relative;
+            border: 1px solid var(--christmas-gold);
         }
         
         /* Holiday indicator styles */
@@ -451,9 +519,26 @@
         .hidden {
             display: none !important;
         }
+        /* Add this for a subtle snow effect on the body */
+        @keyframes snowfall {
+            0% { background-position: 0 0, 0 0, 0 0, 0 0; }
+            100% { background-position: 0 0, 500px 1000px, 400px 400px, 300px 300px; }
+        }
+
+        body.christmas-snow {
+            background-color: var(--christmas-cream);
+            background-image:
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='4' cy='4' r='1.5' fill='%23fff' fill-opacity='0.5'/%3E%3C/svg%3E"),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Ccircle cx='6' cy='6' r='2' fill='%23fff' fill-opacity='0.4'/%3E%3C/svg%3E"),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='6'%3E%3Ccircle cx='3' cy='3' r='1' fill='%23fff' fill-opacity='0.6'/%3E%3C/svg%3E"),
+                linear-gradient(180deg, var(--christmas-cream) 0%, #e8e0d0 100%);
+            background-repeat: repeat, repeat, repeat, no-repeat;
+            background-size: auto, auto, auto, cover;
+            animation: snowfall 20s linear infinite;
+        }
     </style>
 </head>
-<body class="p-2 sm:p-4 md:p-8">
+<body class="p-2 sm:p-4 md:p-8 christmas-snow">
     <div class="container mx-auto">
         <header class="mizzou-header flex flex-col items-center">
             <img src="https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/svg/E313.svg" alt="GI Logo" class="w-24 h-24 mb-2">
