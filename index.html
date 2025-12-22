@@ -982,21 +982,24 @@
 
         /**
          * Applies or removes highlight classes from a table cell based on active highlights.
+         * Supports cells that contain multiple fellows.
          * @param {HTMLElement} tdElement - The table cell element.
-         * @param {string} cellFellowInitial - The fellow initial in the cell.
+         * @param {string[]} cellFellowInitials - The fellow initials in the cell.
          */
-        function applyCellHighlights(tdElement, cellFellowInitial) {
-            // Only apply highlights if cellFellowInitial is a recognized single fellow
-            if (ALL_FELLOWS.includes(cellFellowInitial)) {
-                ALL_FELLOWS.forEach(f => tdElement.classList.remove(getHighlightClass(f))); // Clear previous highlights
-                tdElement.classList.remove('highlight-cell-base');
-                if (activeHighlights.has(cellFellowInitial)) {
-                    tdElement.classList.add('highlight-cell-base');
-                    tdElement.classList.add(getHighlightClass(cellFellowInitial));
-                }
-            } else { // For combined entries like ZT&AM, clear any individual highlights
-                 ALL_FELLOWS.forEach(f => tdElement.classList.remove(getHighlightClass(f)));
-                 tdElement.classList.remove('highlight-cell-base');
+        function applyCellHighlights(tdElement, cellFellowInitials) {
+            const normalizedFellows = cellFellowInitials
+                .map(cf => cf.trim())
+                .filter(cf => ALL_FELLOWS.includes(cf));
+
+            // Clear existing highlight classes before applying new ones
+            const highlightClasses = ALL_FELLOWS.map(f => getHighlightClass(f));
+            tdElement.classList.remove('highlight-cell-base', ...highlightClasses);
+
+            const activeFellowsInCell = normalizedFellows.filter(f => activeHighlights.has(f));
+            activeFellowsInCell.forEach(f => tdElement.classList.add(getHighlightClass(f)));
+
+            if (activeFellowsInCell.length > 0) {
+                tdElement.classList.add('highlight-cell-base');
             }
         }
         
@@ -1223,11 +1226,7 @@
                     }
                     
                     if (cellContent === '-') td.classList.add('no-assignment');
-                    cellFellows.forEach(cf => {
-                        if (ALL_FELLOWS.includes(cf)) {
-                             applyCellHighlights(td, cf); 
-                        }
-                    });
+                    applyCellHighlights(td, cellFellows);
                     if (cellFellows.length > 1 && activeHighlights.size > 0) {
                         if (cellFellows.some(cf => activeHighlights.has(cf))) {
                         }
