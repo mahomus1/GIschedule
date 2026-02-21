@@ -756,25 +756,6 @@
         .current-week-highlight td {
             animation: weekGlow 3s ease-in-out infinite;
         }
-
-        /* Ramadan date display */
-        .ramadan-date-display {
-            margin-top: 0.4rem;
-            font-size: 0.8rem;
-            opacity: 0.85;
-            letter-spacing: 0.5px;
-            color: var(--ramadan-gold-light);
-            font-style: italic;
-        }
-        .ramadan-date-display .hijri {
-            font-family: 'Amiri', serif;
-            font-size: 0.9rem;
-            font-style: normal;
-        }
-        .ramadan-date-display .separator {
-            margin: 0 0.4rem;
-            opacity: 0.5;
-        }
     </style>
 </head>
 <body class="p-2 sm:p-4 md:p-8">
@@ -809,7 +790,6 @@
             </div>
             <h1 class="text-3xl sm:text-4xl font-bold" style="font-family: 'Amiri', serif; letter-spacing: 0.5px;">Fellows Schedule</h1>
             <p>Mizzou Division of Gastroenterology &amp; Hepatology</p>
-            <div id="ramadan-date" class="ramadan-date-display"></div>
         </header>
 
         <div class="controls-wrapper"> <div class="controls">
@@ -2066,35 +2046,6 @@
             initializeApp();
         });
     
-        // Ramadan date display
-        function updateRamadanDate() {
-            const el = document.getElementById('ramadan-date');
-            if (!el) return;
-
-            const ramadanStart = new Date(2026, 1, 17); // Feb 17, 2026 = 1 Ramadan 1447 AH
-            const ramadanEnd = new Date(2026, 2, 18);   // ~30 days of Ramadan
-            const today = new Date();
-            today.setHours(0,0,0,0);
-
-            const diffMs = today - ramadanStart;
-            const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-            if (diffDays < 0) {
-                // Before Ramadan
-                const daysUntil = Math.abs(diffDays);
-                el.innerHTML = '<span class="hijri">رمضان مبارك</span><span class="separator">·</span>Ramadan begins in ' + daysUntil + ' day' + (daysUntil !== 1 ? 's' : '');
-            } else if (diffDays < 30) {
-                // During Ramadan
-                const ramadanDay = diffDays + 1;
-                const hijriDate = ramadanDay + ' Ramadan 1447 AH';
-                el.innerHTML = '<span class="hijri">رمضان مبارك</span><span class="separator">·</span>' + hijriDate;
-            } else {
-                // After Ramadan
-                el.innerHTML = '<span class="hijri">عيد مبارك</span><span class="separator">·</span>Eid Mubarak';
-            }
-        }
-        updateRamadanDate();
-
     </script>
 </body>
 </html>
