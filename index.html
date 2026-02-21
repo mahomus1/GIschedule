@@ -51,20 +51,20 @@
         }
         /* Add subtle snowflake pattern */
         .mizzou-header::before {
-            content: "☪";
+            content: "🏮";
             position: absolute;
             top: 10px;
             left: 20px;
-            font-size: 2rem;
-            opacity: 0.4;
+            font-size: 1.5rem;
+            opacity: 0.5;
         }
         .mizzou-header::after {
-            content: "✦";
+            content: "🏮";
             position: absolute;
             bottom: 10px;
             right: 20px;
-            font-size: 2rem;
-            opacity: 0.4;
+            font-size: 1.5rem;
+            opacity: 0.5;
         }
         .mizzou-header h1,
         .mizzou-header p {
@@ -532,39 +532,119 @@
             display: none !important;
         }
         /* Add this for a subtle snow effect on the body */
-        @keyframes snowfall {
-            0% { background-position: 0 0, 0 0, 0 0; }
-            100% { background-position: 500px 1000px, 400px 400px, 300px 300px; }
-        }
 
-        body.ramadan-night {
-            background-color: #faf6ed;
-            background-image: 
-                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cpath d='M30 5 L35 25 L55 30 L35 35 L30 55 L25 35 L5 30 L25 25 Z' fill='%23d4a017' fill-opacity='0.04'/%3E%3C/svg%3E"),
-                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Ccircle cx='20' cy='20' r='1' fill='%23d4a017' fill-opacity='0.08'/%3E%3C/svg%3E");
-            animation: none;
-        }
-        #snow-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
 
-        .snow-content {
+
+
+
+
+
+        /* Ramadan Lanterns */
+        @keyframes lanternSwing {
+            0%, 100% { transform: rotate(-3deg); }
+            50% { transform: rotate(3deg); }
+        }
+        @keyframes lanternGlow {
+            0%, 100% { filter: drop-shadow(0 0 8px rgba(240, 199, 94, 0.6)); }
+            50% { filter: drop-shadow(0 0 16px rgba(240, 199, 94, 0.9)); }
+        }
+        .lanterns-container {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .lantern {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: lanternSwing 4s ease-in-out infinite;
+            transform-origin: top center;
+        }
+        .lantern:nth-child(2) { animation-delay: -1s; }
+        .lantern:nth-child(3) { animation-delay: -2s; }
+        .lantern-chain {
+            width: 2px;
+            height: 12px;
+            background: var(--ramadan-gold);
+            opacity: 0.7;
+        }
+        .lantern-cap {
+            width: 16px;
+            height: 6px;
+            background: var(--ramadan-gold);
+            border-radius: 2px 2px 0 0;
+        }
+        .lantern-body {
+            width: 28px;
+            height: 40px;
+            border-radius: 6px 6px 4px 4px;
             position: relative;
-            z-index: 1;
+            overflow: hidden;
+            animation: lanternGlow 3s ease-in-out infinite;
+        }
+        .lantern:nth-child(1) .lantern-body {
+            background: linear-gradient(180deg, #f0c75e 0%, #d4a017 40%, #c4900a 100%);
+            animation-delay: 0s;
+        }
+        .lantern:nth-child(2) .lantern-body {
+            background: linear-gradient(180deg, #e8b84a 0%, #c9920f 40%, #b3800a 100%);
+            animation-delay: -1.5s;
+            width: 32px;
+            height: 46px;
+        }
+        .lantern:nth-child(3) .lantern-body {
+            background: linear-gradient(180deg, #f0c75e 0%, #d4a017 40%, #c4900a 100%);
+            animation-delay: -0.7s;
+        }
+        .lantern-body::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 15%;
+            right: 15%;
+            bottom: 20%;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+        }
+        /* Lantern decorative lines */
+        .lantern-body::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 1px;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .lantern-tip {
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 8px solid var(--ramadan-gold);
+        }
+        /* Larger lanterns for bigger screens */
+        @media (min-width: 640px) {
+            .lanterns-container { gap: 2.5rem; }
+            .lantern-chain { height: 18px; }
+            .lantern-cap { width: 20px; height: 8px; }
+            .lantern-body { width: 36px; height: 52px; border-radius: 8px 8px 5px 5px; }
+            .lantern:nth-child(2) .lantern-body { width: 42px; height: 60px; }
+            .lantern-tip { border-left-width: 8px; border-right-width: 8px; border-top-width: 10px; }
         }
     </style>
 </head>
-<body class="p-2 sm:p-4 md:p-8 ramadan-night">
-    <canvas id="snow-canvas" aria-hidden="true"></canvas>
-    <div class="container mx-auto snow-content">
+<body class="p-2 sm:p-4 md:p-8">
+    <div class="container mx-auto">
         <header class="mizzou-header flex flex-col items-center">
-            <div class="flex items-center gap-3 mb-2"><img src="https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/svg/E313.svg" alt="GI Logo" class="w-20 h-20"><span class="text-5xl">🌙</span></div>
+            <div class="flex items-center gap-3 mb-1"><img src="https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/svg/E313.svg" alt="GI Logo" class="w-20 h-20"><span class="text-5xl">🌙</span></div>
+            <div class="lanterns-container">
+                <div class="lantern"><div class="lantern-chain"></div><div class="lantern-cap"></div><div class="lantern-body"></div><div class="lantern-tip"></div></div>
+                <div class="lantern"><div class="lantern-chain"></div><div class="lantern-cap"></div><div class="lantern-body"></div><div class="lantern-tip"></div></div>
+                <div class="lantern"><div class="lantern-chain"></div><div class="lantern-cap"></div><div class="lantern-body"></div><div class="lantern-tip"></div></div>
+            </div>
             <h1 class="text-3xl sm:text-4xl font-bold">Fellows Schedule</h1>
             <p>Mizzou Division of Gastroenterology &amp; Hepatology</p>
         </header>
@@ -643,63 +723,7 @@
             backupCallScheduleCsvData = await backupCallResp.text();
         }
 
-        function initSnowfall() {
-            const canvas = document.getElementById('snow-canvas');
-            if (!canvas || !canvas.getContext) return;
 
-            const ctx = canvas.getContext('2d');
-            const maxParticles = 50;
-            let particles = [];
-            let angle = 0;
-
-            function resizeCanvas() {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-            }
-
-            function createParticles() {
-                particles = Array.from({ length: maxParticles }, () => ({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    r: Math.random() * 2 + 0.5,
-                    speed: Math.random() * 0.15 + 0.05,
-                    drift: Math.random() * Math.PI * 2
-                }));
-            }
-
-            function drawParticles() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                angle += 0.001;
-                particles.forEach(p => {
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2, true);
-                    ctx.fillStyle = 'rgba(212, 160, 23, 0.15)';
-                    ctx.shadowColor = 'rgba(212, 160, 23, 0.1)';
-                    ctx.shadowBlur = 6;
-                    ctx.fill();
-
-                    p.y -= p.speed;
-                    p.x += Math.sin(angle + p.drift) * 0.3;
-
-                    if (p.y < -10) {
-                        p.y = canvas.height + 10;
-                        p.x = Math.random() * canvas.width;
-                    }
-                    if (p.x > canvas.width + 5) p.x = -5;
-                    if (p.x < -5) p.x = canvas.width + 5;
-                });
-                requestAnimationFrame(drawParticles);
-            }
-
-            resizeCanvas();
-            createParticles();
-            drawParticles();
-
-            window.addEventListener('resize', () => {
-                resizeCanvas();
-                createParticles();
-            });
-        }
 
         // Fellow initials and names (can be expanded)
         let ALL_FELLOWS = ["ZT", "MM", "XD", "DF", "MG", "IM", "AA", "EZ", "AM", "MD"]; // Will be dynamically populated
@@ -1877,7 +1901,6 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             initializeApp();
-            initSnowfall();
         });
     </script>
 </body>
