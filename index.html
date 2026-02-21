@@ -3,20 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fellow Schedule</title>
+    <title>Fellow Schedule | Ramadan Mubarak</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {
-            /* Christmas colors */
-            --christmas-red: #c41e3a;
-            --christmas-red-dark: #a01830;
-            --christmas-green: #165b33;
-            --christmas-green-light: #1e7b46;
-            --christmas-gold: #d4af37;
-            --christmas-white: #fffafa;
-            --christmas-cream: #f5f0e1;
-            --christmas-silver: #c0c0c0;
+            /* Ramadan colors */
+            --ramadan-navy: #0c1445;
+            --ramadan-navy-light: #162060;
+            --ramadan-gold: #d4a017;
+            --ramadan-gold-light: #f0c75e;
+            --ramadan-purple: #2d1b69;
+            --ramadan-purple-light: #4a3080;
+            --ramadan-white: #fffef7;
+            --ramadan-cream: #f5f0e8;
+            --ramadan-teal: #1a6b5a;
             /* Legacy variables retained for compatibility */
+            --christmas-red: #0c1445;
+            --christmas-red-dark: #091035;
+            --christmas-green: #1a6b5a;
+            --christmas-green-light: #238b74;
+            --christmas-gold: #d4a017;
+            --christmas-white: #fffef7;
+            --christmas-cream: #f5f0e8;
+            --christmas-silver: #c0c0c0;
             --mizzou-black: #000000;
             --mizzou-gold: #FFB612;
             --mizzou-gold-dark: #C99700;
@@ -26,61 +35,61 @@
         }
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(180deg, var(--christmas-cream) 0%, #e8e0d0 100%);
+            background: linear-gradient(180deg, #0c1445 0%, #091035 100%);
         }
         .mizzou-header {
-            background: linear-gradient(135deg, var(--christmas-red) 0%, var(--christmas-red-dark) 100%);
-            color: var(--christmas-white);
+            background: linear-gradient(135deg, var(--ramadan-navy) 0%, var(--ramadan-purple) 100%);
+            color: var(--ramadan-white);
             padding: 1rem;
             border-radius: 0.5rem;
             margin-bottom: 1.5rem;
             text-align: center;
-            border: 3px solid var(--christmas-gold);
-            box-shadow: 0 4px 20px rgba(196, 30, 58, 0.3);
+            border: 3px solid var(--ramadan-gold);
+            box-shadow: 0 4px 20px rgba(12, 20, 69, 0.5);
             position: relative;
             overflow: hidden;
         }
         /* Add subtle snowflake pattern */
         .mizzou-header::before {
-            content: "❄";
+            content: "☪";
             position: absolute;
             top: 10px;
             left: 20px;
             font-size: 2rem;
-            opacity: 0.3;
+            opacity: 0.4;
         }
         .mizzou-header::after {
-            content: "❄";
+            content: "✦";
             position: absolute;
             bottom: 10px;
             right: 20px;
             font-size: 2rem;
-            opacity: 0.3;
+            opacity: 0.4;
         }
         .mizzou-header h1,
         .mizzou-header p {
-            color: var(--christmas-white);
+            color: var(--ramadan-white);
             text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
         }
         .mizzou-footer {
-            background: linear-gradient(135deg, var(--christmas-green) 0%, var(--christmas-green-light) 100%);
-            color: var(--christmas-white);
+            background: linear-gradient(135deg, var(--ramadan-navy) 0%, var(--ramadan-purple) 100%);
+            color: var(--ramadan-white);
             padding: 1rem;
             border-radius: 0.5rem;
             margin-top: 2rem;
             text-align: center;
-            border: 2px solid var(--christmas-gold);
-            border-top: 3px solid var(--christmas-gold);
+            border: 2px solid var(--ramadan-gold);
+            border-top: 3px solid var(--ramadan-gold);
             position: relative;
         }
         /* Add decorative holly */
         .mizzou-footer::before {
-            content: "🎄";
+            content: "🌙";
             margin-right: 10px;
         }
 
         .mizzou-footer::after {
-            content: "🎄";
+            content: "✨";
             margin-left: 10px;
         }
         .table-wrapper { /* Added to allow horizontal scroll on smaller screens if table is too wide */
@@ -90,9 +99,9 @@
         .table-container {
             max-height: 70vh;
             overflow: auto; /* Ensures both vertical and horizontal scroll if needed */
-            border: 2px solid var(--christmas-green);
+            border: 2px solid var(--ramadan-gold);
             border-radius: 0.5rem; /* rounded-lg */
-            box-shadow: 0 4px 15px rgba(22, 91, 51, 0.2);
+            box-shadow: 0 4px 15px rgba(212, 160, 23, 0.2);
             transform-origin: top left; /* For zoom */
             transition: transform 0.2s ease-out, width 0.2s ease-out, max-height 0.2s ease-out; /* For zoom */
         }
@@ -121,23 +130,23 @@
         }
 
         th {
-            background: linear-gradient(135deg, var(--christmas-green) 0%, var(--christmas-green-light) 100%);
-            color: var(--christmas-white);
+            background: linear-gradient(135deg, var(--ramadan-navy) 0%, var(--ramadan-purple) 100%);
+            color: var(--ramadan-white);
             font-weight: 600; /* semibold */
             position: sticky;
             top: 0;
             z-index: 10;
         }
-        tr:nth-child(odd) { background-color: var(--christmas-white); }
-        tr:nth-child(even) { background-color: rgba(22, 91, 51, 0.05); }
-        tr:hover { background-color: rgba(212, 175, 55, 0.15); }
+        tr:nth-child(odd) { background-color: var(--ramadan-white); }
+        tr:nth-child(even) { background-color: rgba(12, 20, 69, 0.04); }
+        tr:hover { background-color: rgba(212, 160, 23, 0.12); }
 
         /* Sticky first column (Week) */
         thead th:first-child {
             position: sticky;
             left: 0;
             z-index: 12; /* Higher than other th cells, but lower than popovers */
-            background: linear-gradient(135deg, var(--christmas-green) 0%, var(--christmas-green-light) 100%);
+            background: linear-gradient(135deg, var(--ramadan-navy) 0%, var(--ramadan-purple) 100%);
             white-space: normal; /* Allow week text to wrap if needed */
         }
         tbody td:first-child {
@@ -151,9 +160,9 @@
             transition: padding 0.2s ease-out, font-size 0.2s ease-out, min-width 0.2s ease-out;
         }
         /* Ensure sticky column background matches row background */
-        tr:nth-child(odd) td:first-child { background-color: var(--christmas-white); }
-        tr:nth-child(even) td:first-child { background-color: rgba(22, 91, 51, 0.05); }
-        tr:hover td:first-child { background-color: rgba(212, 175, 55, 0.15); }
+        tr:nth-child(odd) td:first-child { background-color: var(--ramadan-white); }
+        tr:nth-child(even) td:first-child { background-color: rgba(12, 20, 69, 0.04); }
+        tr:hover td:first-child { background-color: rgba(212, 160, 23, 0.12); }
 
         /* Controls styling */
         .controls-wrapper { /* Added wrapper for better spacing control */
@@ -209,10 +218,10 @@
 
 
         .fellow-btn, .action-btn {
-            background: linear-gradient(135deg, var(--christmas-red) 0%, var(--christmas-red-dark) 100%);
-            color: var(--christmas-white);
+            background: linear-gradient(135deg, var(--ramadan-navy) 0%, var(--ramadan-purple) 100%);
+            color: var(--ramadan-white);
             padding: 0.5rem 0.75rem;
-            border: 2px solid var(--christmas-gold);
+            border: 2px solid var(--ramadan-gold);
             border-radius: 0.375rem;
             cursor: pointer;
             transition: background-color 0.2s, box-shadow 0.2s, padding 0.2s, font-size 0.2s, transform 0.2s;
@@ -220,14 +229,14 @@
             font-size: 0.875rem;
         }
         .fellow-btn:hover, .action-btn:hover {
-            background: linear-gradient(135deg, #d42a48 0%, #b01f38 100%);
+            background: linear-gradient(135deg, #162060 0%, #3a2580 100%);
             transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(196, 30, 58, 0.3);
+            box-shadow: 0 4px 8px rgba(212, 160, 23, 0.4);
         }
         .fellow-btn.active {
-            background: linear-gradient(135deg, var(--christmas-green) 0%, var(--christmas-green-light) 100%);
-            color: var(--christmas-white);
-            box-shadow: 0 0 0 2px var(--christmas-gold), 0 0 0 4px var(--christmas-green);
+            background: linear-gradient(135deg, var(--ramadan-navy) 0%, var(--ramadan-purple) 100%);
+            color: var(--ramadan-white);
+            box-shadow: 0 0 0 2px var(--ramadan-gold), 0 0 0 4px var(--ramadan-navy);
         }
         .clear-highlights-btn {
             background-color: #ef5350; color: white; padding: 0.5rem 1rem;
@@ -259,20 +268,20 @@
         
         /* Current week highlight */
         .current-week-highlight td {
-            background: linear-gradient(90deg, rgba(212, 175, 55, 0.25) 0%, rgba(212, 175, 55, 0.1) 100%) !important;
-            border-top: 2px solid var(--christmas-gold);
-            border-bottom: 2px solid var(--christmas-gold);
+            background: linear-gradient(90deg, rgba(212, 160, 23, 0.2) 0%, rgba(212, 160, 23, 0.08) 100%) !important;
+            border-top: 2px solid var(--ramadan-gold);
+            border-bottom: 2px solid var(--ramadan-gold);
             position: relative;
-            box-shadow: inset 0 0 0 2px rgba(212, 175, 55, 0.5);
+            box-shadow: inset 0 0 0 2px rgba(212, 160, 23, 0.4);
         }
         .current-week-highlight td:first-child {
-            background: linear-gradient(90deg, rgba(212, 175, 55, 0.25) 0%, rgba(212, 175, 55, 0.1) 100%) !important;
-            border-left: 4px solid var(--christmas-red);
+            background: linear-gradient(90deg, rgba(212, 160, 23, 0.2) 0%, rgba(212, 160, 23, 0.08) 100%) !important;
+            border-left: 4px solid var(--ramadan-gold);
         }
         
         /* New styles for call/backup badges */
         .initials-call {
-            background: linear-gradient(135deg, var(--christmas-gold) 0%, #c9a227 100%);
+            background: linear-gradient(135deg, var(--ramadan-gold) 0%, var(--ramadan-gold-light) 100%);
             color: #1a1a1a;
             padding: 1px 4px;
             border-radius: 3px;
@@ -285,7 +294,7 @@
         }
 
         .initials-backup {
-            background: linear-gradient(135deg, var(--christmas-green) 0%, var(--christmas-green-light) 100%);
+            background: linear-gradient(135deg, var(--ramadan-navy) 0%, var(--ramadan-purple) 100%);
             color: white;
             padding: 1px 4px;
             border-radius: 3px;
@@ -293,11 +302,11 @@
             cursor: help;
             display: inline-block;
             position: relative;
-            border: 1px solid #0f4d2a;
+            border: 1px solid #0c1445;
         }
 
         .initials-both {
-            background: linear-gradient(135deg, var(--christmas-red) 50%, var(--christmas-green) 50%);
+            background: linear-gradient(135deg, var(--ramadan-navy) 50%, var(--ramadan-teal) 50%);
             color: white;
             padding: 1px 4px;
             border-radius: 3px;
@@ -306,7 +315,7 @@
             text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
             display: inline-block;
             position: relative;
-            border: 1px solid var(--christmas-gold);
+            border: 1px solid var(--ramadan-gold);
         }
 
         .badge-tooltip {
@@ -365,7 +374,7 @@
         /* Badge styles for holiday and weekend indicators */
         .holiday-badge {
             display: inline-block;
-            background: linear-gradient(135deg, var(--christmas-red) 0%, var(--christmas-red-dark) 100%);
+            background: linear-gradient(135deg, var(--ramadan-purple) 0%, var(--ramadan-navy) 100%);
             color: white;
             font-size: 0.6em;
             padding: 0 3px;
@@ -375,13 +384,13 @@
             vertical-align: super;
             cursor: help;
             position: relative;
-            border: 1px solid var(--christmas-gold);
+            border: 1px solid var(--ramadan-gold);
             box-shadow: 0 1px 3px rgba(0,0,0,0.2);
         }
 
         .weekend-badge {
             display: inline-block;
-            background: linear-gradient(135deg, var(--christmas-green) 0%, var(--christmas-green-light) 100%);
+            background: linear-gradient(135deg, var(--ramadan-navy) 0%, var(--ramadan-purple) 100%);
             color: white;
             font-size: 0.6em;
             padding: 0 3px;
@@ -391,7 +400,7 @@
             vertical-align: super;
             cursor: help;
             position: relative;
-            border: 1px solid var(--christmas-gold);
+            border: 1px solid var(--ramadan-gold);
         }
         
         /* Holiday indicator styles */
@@ -527,13 +536,13 @@
             100% { background-position: 500px 1000px, 400px 400px, 300px 300px; }
         }
 
-        body.christmas-snow {
-            background-color: var(--christmas-cream);
+        body.ramadan-night {
+            background-color: #0c1445;
             background-image: 
-                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='4' cy='4' r='1.5' fill='%23fff' fill-opacity='0.5'/%3E%3C/svg%3E"),
-                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Ccircle cx='6' cy='6' r='2' fill='%23fff' fill-opacity='0.4'/%3E%3C/svg%3E"),
-                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='6'%3E%3Ccircle cx='3' cy='3' r='1' fill='%23fff' fill-opacity='0.6'/%3E%3C/svg%3E");
-            animation: snowfall 20s linear infinite;
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10'%3E%3Ctext x='5' y='8' font-size='6' text-anchor='middle' fill='%23f0c75e' fill-opacity='0.3'%3E✦%3C/text%3E%3C/svg%3E"),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Ccircle cx='8' cy='8' r='1' fill='%23f0c75e' fill-opacity='0.25'/%3E%3C/svg%3E"),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='4' cy='4' r='0.8' fill='%23fff' fill-opacity='0.15'/%3E%3C/svg%3E");
+            animation: snowfall 40s linear infinite;
         }
         #snow-canvas {
             position: fixed;
@@ -551,11 +560,11 @@
         }
     </style>
 </head>
-<body class="p-2 sm:p-4 md:p-8 christmas-snow">
+<body class="p-2 sm:p-4 md:p-8 ramadan-night">
     <canvas id="snow-canvas" aria-hidden="true"></canvas>
     <div class="container mx-auto snow-content">
         <header class="mizzou-header flex flex-col items-center">
-            <img src="https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/svg/E313.svg" alt="GI Logo" class="w-24 h-24 mb-2">
+            <div class="text-6xl mb-2">🌙</div>
             <h1 class="text-3xl sm:text-4xl font-bold">Fellows Schedule</h1>
             <p>Mizzou Division of Gastroenterology &amp; Hepatology</p>
         </header>
@@ -639,53 +648,53 @@
             if (!canvas || !canvas.getContext) return;
 
             const ctx = canvas.getContext('2d');
-            const maxFlakes = 160;
-            let flakes = [];
-            let angle = 0;
+            const maxStars = 120;
+            let stars = [];
+            let time = 0;
 
             function resizeCanvas() {
                 canvas.width = window.innerWidth;
                 canvas.height = window.innerHeight;
             }
 
-            function createFlakes() {
-                flakes = Array.from({ length: maxFlakes }, () => ({
+            function createStars() {
+                stars = Array.from({ length: maxStars }, () => ({
                     x: Math.random() * canvas.width,
                     y: Math.random() * canvas.height,
-                    r: Math.random() * 2 + 1,
-                    speed: Math.random() * 0.5 + 0.5
+                    r: Math.random() * 1.5 + 0.3,
+                    twinkleSpeed: Math.random() * 0.02 + 0.005,
+                    twinkleOffset: Math.random() * Math.PI * 2,
+                    isGold: Math.random() > 0.6
                 }));
             }
 
-            function drawSnow() {
+            function drawStars() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                angle += 0.0025;
-                flakes.forEach(flake => {
+                time += 0.016;
+                stars.forEach(star => {
+                    const alpha = 0.3 + 0.5 * Math.sin(time * star.twinkleSpeed * 60 + star.twinkleOffset);
                     ctx.beginPath();
-                    ctx.arc(flake.x, flake.y, flake.r, 0, Math.PI * 2, true);
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
-                    ctx.shadowColor = 'rgba(255, 255, 255, 0.4)';
-                    ctx.shadowBlur = 8;
-                    ctx.fill();
-
-                    flake.y += Math.cos(angle + flake.speed) + flake.speed + 0.6;
-                    flake.x += Math.sin(angle) * 0.6;
-
-                    if (flake.x > canvas.width + 5 || flake.x < -5 || flake.y > canvas.height) {
-                        flake.x = Math.random() * canvas.width;
-                        flake.y = -10;
+                    ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2, true);
+                    if (star.isGold) {
+                        ctx.fillStyle = `rgba(240, 199, 94, ${alpha * 0.8})`;
+                        ctx.shadowColor = 'rgba(240, 199, 94, 0.3)';
+                    } else {
+                        ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.7})`;
+                        ctx.shadowColor = 'rgba(255, 255, 255, 0.2)';
                     }
+                    ctx.shadowBlur = star.r * 4;
+                    ctx.fill();
                 });
-                requestAnimationFrame(drawSnow);
+                requestAnimationFrame(drawStars);
             }
 
             resizeCanvas();
-            createFlakes();
-            drawSnow();
+            createStars();
+            drawStars();
 
             window.addEventListener('resize', () => {
                 resizeCanvas();
-                createFlakes();
+                createStars();
             });
         }
 
