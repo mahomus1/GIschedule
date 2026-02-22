@@ -1266,12 +1266,17 @@
          * @returns {{start: Date, end: Date, nextYearContext: number}} Date objects and the year context for the next iteration.
          */
         function getFullDateObjectsForWeek(weekString, currentYearContext) {
-            const [datePart1, datePart2] = weekString.split('-');
+            // Robust split: first slash-delimited date part, then everything after first dash
+            const firstSlash = weekString.indexOf('/');
+            const dashAfterStart = weekString.indexOf('-', firstSlash + 1);
+            const datePart1 = weekString.substring(0, dashAfterStart);
+            const datePart2 = weekString.substring(dashAfterStart + 1);
             const [startMonthStr, startDayStr] = datePart1.split('/');
             const startMonth = parseInt(startMonthStr, 10);
             const startDay = parseInt(startDayStr, 10);
 
-            const endParts = datePart2.split('/');
+            // Handle end date: may use dash or slash as separator (e.g. '12-26' or '12/26' or '1/2/26')
+            const endParts = datePart2.includes('/') ? datePart2.split('/') : datePart2.split('-');
             const endMonth = parseInt(endParts[0], 10);
             const endDay = parseInt(endParts[1], 10);
             const endYearShort = endParts.length === 3 ? parseInt(endParts[2], 10) : null;
@@ -1300,9 +1305,18 @@
             }
             const startDate = new Date(sActualYear, startMonth - 1, startDay);
             const endDate = new Date(eActualYear, endMonth - 1, endDay);
-            startDate.setHours(0,0,0,0); // Normalize to start of day
-            endDate.setHours(23,59,59,999); // Normalize to end of day
-            return { start: startDate, end: endDate, nextYearContext: nextIterYearContext };
+            // Extend range to cover surrounding weekend days for current-week detection
+            // Pull start back to previous Saturday (day before Sunday before Monday)
+            const extStartDate = new Date(startDate);
+            extStartDate.setDate(extStartDate.getDate() - 2); // Saturday before the work week
+            extStartDate.setHours(0,0,0,0);
+            // Push end forward to following Sunday
+            const extEndDate = new Date(endDate);
+            extEndDate.setDate(extEndDate.getDate() + 2); // Sunday after the work week
+            extEndDate.setHours(23,59,59,999);
+            startDate.setHours(0,0,0,0);
+            endDate.setHours(23,59,59,999);
+            return { start: extStartDate, end: extEndDate, exactStart: startDate, exactEnd: endDate, nextYearContext: nextIterYearContext };
         }
 
 
@@ -1361,9 +1375,20 @@
          */
         function attemptScrollToElement(element) {
             if (element) {
-                setTimeout(() => { // Timeout to allow DOM to settle after render
-                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }, 0);
+                // Use multiple attempts with increasing delays for mobile reliability
+                const doScroll = () => {
+                    try {
+                        const rect = element.getBoundingClientRect();
+                        const scrollContainer = window;
+                        const targetY = window.pageYOffset + rect.top - (window.innerHeight / 2) + (rect.height / 2);
+                        window.scrollTo({ top: Math.max(0, targetY), behavior: 'smooth' });
+                    } catch(e) {
+                        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                };
+                // First attempt after short delay, second after layout settles
+                setTimeout(doScroll, 100);
+                setTimeout(doScroll, 600);
             }
         }
 
