@@ -1368,12 +1368,22 @@
             if (element) {
                 const doScroll = () => {
                     try {
-                        // Account for any CSS zoom/transform on the body or container
-                        const rect = element.getBoundingClientRect();
-                        const scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
-                        const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
-                        const targetY = scrollY + rect.top - (viewportHeight / 2) + (rect.height / 2);
-                        window.scrollTo({ top: Math.max(0, targetY), behavior: 'smooth' });
+                        // Find the scrollable container (table-container with overflow:auto)
+                        const container = element.closest('.table-container') || element.closest('.table-wrapper');
+                        if (container && container.scrollHeight > container.clientHeight) {
+                            // Scroll within the overflow container
+                            const containerRect = container.getBoundingClientRect();
+                            const elementRect = element.getBoundingClientRect();
+                            const scrollTop = container.scrollTop + (elementRect.top - containerRect.top) - (container.clientHeight / 2) + (elementRect.height / 2);
+                            container.scrollTo({ top: Math.max(0, scrollTop), behavior: 'smooth' });
+                        } else {
+                            // Fallback: scroll the window
+                            const scrollY = window.scrollY || window.pageYOffset || 0;
+                            const rect = element.getBoundingClientRect();
+                            const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+                            const targetY = scrollY + rect.top - (viewportHeight / 2) + (rect.height / 2);
+                            window.scrollTo({ top: Math.max(0, targetY), behavior: 'smooth' });
+                        }
                     } catch(e) {
                         element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }
