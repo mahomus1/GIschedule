@@ -1305,18 +1305,9 @@
             }
             const startDate = new Date(sActualYear, startMonth - 1, startDay);
             const endDate = new Date(eActualYear, endMonth - 1, endDay);
-            // Extend range to cover surrounding weekend days for current-week detection
-            // Pull start back to previous Saturday (day before Sunday before Monday)
-            const extStartDate = new Date(startDate);
-            extStartDate.setDate(extStartDate.getDate() - 2); // Saturday before the work week
-            extStartDate.setHours(0,0,0,0);
-            // Push end forward to following Sunday
-            const extEndDate = new Date(endDate);
-            extEndDate.setDate(extEndDate.getDate() + 2); // Sunday after the work week
-            extEndDate.setHours(23,59,59,999);
             startDate.setHours(0,0,0,0);
             endDate.setHours(23,59,59,999);
-            return { start: extStartDate, end: extEndDate, exactStart: startDate, exactEnd: endDate, nextYearContext: nextIterYearContext };
+            return { start: startDate, end: endDate, nextYearContext: nextIterYearContext };
         }
 
 
@@ -1375,20 +1366,24 @@
          */
         function attemptScrollToElement(element) {
             if (element) {
-                // Use multiple attempts with increasing delays for mobile reliability
                 const doScroll = () => {
                     try {
+                        // Account for any CSS zoom/transform on the body or container
                         const rect = element.getBoundingClientRect();
-                        const scrollContainer = window;
-                        const targetY = window.pageYOffset + rect.top - (window.innerHeight / 2) + (rect.height / 2);
+                        const scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
+                        const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+                        const targetY = scrollY + rect.top - (viewportHeight / 2) + (rect.height / 2);
                         window.scrollTo({ top: Math.max(0, targetY), behavior: 'smooth' });
                     } catch(e) {
                         element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }
                 };
-                // First attempt after short delay, second after layout settles
-                setTimeout(doScroll, 100);
-                setTimeout(doScroll, 600);
+                // Multiple attempts: after DOM ready, after layout, and after fonts/images
+                requestAnimationFrame(() => {
+                    setTimeout(doScroll, 150);
+                    setTimeout(doScroll, 500);
+                    setTimeout(doScroll, 1200);
+                });
             }
         }
 
@@ -1601,6 +1596,12 @@
 
             applyZoomStyles(currentZoomLevel);
 
+            // If no exact current week match (e.g. weekend), highlight the next upcoming week
+            if (!currentWeekRowElementForScroll && nextUpcomingWeekRowForScroll) {
+                nextUpcomingWeekRowForScroll.classList.add('current-week-highlight');
+                currentWeekRowElementForScroll = nextUpcomingWeekRowForScroll;
+            }
+
             if (shouldScroll) {
                 const rowToScroll = currentWeekRowElementForScroll || nextUpcomingWeekRowForScroll || tbody.firstChild;
                 if (rowToScroll) {
@@ -1752,6 +1753,12 @@
 
 
             applyZoomStyles(currentZoomLevel);
+
+            // If no exact current week match (e.g. weekend), highlight the next upcoming week
+            if (!currentWeekRowElementForHighlight && nextUpcomingWeekRowForScroll) {
+                nextUpcomingWeekRowForScroll.classList.add('current-week-highlight');
+                currentWeekRowElementForHighlight = nextUpcomingWeekRowForScroll;
+            }
 
             if (shouldScroll) {
                 const rowToScroll = currentWeekRowElementForHighlight || nextUpcomingWeekRowForScroll || tbody.firstChild;
